@@ -1,10 +1,131 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>ManufactureWatch</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Factory Machinery Status & Repair Tracking</title>
+    
+    <!-- Bootstrap CSS for styling -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    
+    <!-- external CSS file -->
+    <link rel="stylesheet" href="styles.css"> 
 </head>
 <body>
-    <h1>Welcome to ManufactureWatch</h1>
-    <p>Yayyy, a machinery management system is working!</p>
+
+    <!-- Navigation Bar (Top Menu) -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+            <!-- Website name -->
+            <a class="navbar-brand" href="home.html">ACME Manufacturing Corp</a>
+            
+            <!-- Mobile menu button -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- Navigation links -->
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="home.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+                    <li class="nav-item"><a class="nav-link" href="login.html">Login</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <br><br> 
+
+    <!-- Hero Section (Main Heading and Introduction) -->
+    <header class="bg-info text-white text-center py-5">
+        <div class="container">
+            <h1>Factory Machinery Status & Repair Tracking System</h1>
+            <p class="lead">Monitor machinery status, track faults, and manage repairs efficiently</p>
+            <a href="register.html" class="btn btn-light btn-lg">Get Started</a>
+        </div>
+    </header>
+
+    <!-- Features Section -->
+    <section class="container my-5">
+        <div class="row text-center">
+            
+            <!-- Feature 1: Live Machine Status -->
+            <div class="col-md-4">
+                <img src="status.png" alt="Machine Status" class="img-fluid mb-3" width="80">
+                <h4>Live Machine Status</h4>
+                <p>View real-time operational status of all factory machines.</p>
+            </div>
+
+            <!-- Feature 2: Repair Tracking -->
+            <div class="col-md-4">
+                <img src="repair.png" alt="Repair Tracking" class="img-fluid mb-3" width="80">
+                <h4>Repair Tracking</h4>
+                <p>Technicians can log faults and track ongoing repairs.</p>
+            </div>
+
+            <!-- Feature 3: Reports & Dashboard -->
+            <div class="col-md-4">
+                <img src="report.png" alt="Reports & Dashboard" class="img-fluid mb-3" width="80">
+                <h4>Reports & Dashboard</h4>
+                <p>Managers can generate reports and oversee machine operations.</p>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Quick Access Links -->
+    <section class="bg-light py-5">
+        <div class="container text-center">
+            <h2>Quick Access</h2>
+            <div class="row">
+                
+                <!-- Technician Dashboard -->
+                <div class="col-md-4">
+                    <a href="login.html" class="btn btn-primary btn-lg">Technician Dashboard</a>
+                </div>
+
+                <!-- Repair Team Dashboard -->
+                <div class="col-md-4">
+                    <a href="login.html" class="btn btn-success btn-lg">Repair Team Dashboard</a>
+                </div>
+
+                <!-- Manager Dashboard -->
+                <div class="col-md-4">
+                    <a href="login.html" class="btn btn-warning btn-lg">Manager Dashboard</a>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Section -->
+    <footer class="bg-dark text-white text-center py-3">
+        <p>&copy; 2025 ACME Manufacturing Corp. | Factory Machinery Tracking System</p>
+        
+        <!-- Footer navigation links -->
+        <nav>
+            <a href="#about" class="text-white mx-2">About</a> | 
+            <a href="#contact" class="text-white mx-2">Contact</a> | 
+            <a href="/privacy" class="text-white mx-2">Privacy Policy</a> | 
+            <a href="/terms" class="text-white mx-2">Terms of Service</a>
+        </nav>
+        
+        <!-- Help & Support -->
+        <p>Need Help? Visit our <a href="/user-guide" class="text-info">User Guide</a> or email us at 
+            <a href="mailto:acme@gmail.com" class="text-info">acme@gmail.com</a>.
+        </p>
+        
+        <!-- Social Media Links -->
+        <p>Follow us on: 
+            <a href="https://www.linkedin.com" target="_blank" class="text-info">LinkedIn</a> | 
+            <a href="https://twitter.com" target="_blank" class="text-info">Twitter</a>
+        </p>
+    </footer>
+
+    <!-- Bootstrap JavaScript for functionality -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>
