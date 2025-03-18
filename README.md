@@ -7,7 +7,7 @@
 ### Key Technologies
 - **Python 3.11 (Django framework)**
 - **Docker & Docker Compose**
-- **SQLite** (configurable using `dj-database-url`)
+- **PostgreSQL** (configurable using `dj-database-url`)
 - **HTML/CSS + JavaScript** (front-end)
 - **GitHub Issues & Projects** (task management)
 
