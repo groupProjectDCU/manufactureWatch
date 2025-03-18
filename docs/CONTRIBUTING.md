@@ -1,6 +1,6 @@
 # Development Process & Contribution Guide
 
-This document explains how to set up the project, contribute code, and collaborate effectively with the team. **Please read it before you begin working on any task** so that our workflow remains consistent.
+This document explains how to contribute code, and collaborate effectively with the team. **Please read it before you begin working on any task** so that our workflow remains consistent.
 
 ---
 
