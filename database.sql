@@ -46,7 +46,7 @@ CREATE TABLE fault_cases (
     case_id INT AUTO_INCREMENT PRIMARY KEY,
     machine_id INT,
     created_by INT,
-    status ENUM('Open', 'in_progress', 'Resolved') DEFAULT 'Open',
+    status ENUM('Open', 'In progress', 'Resolved') DEFAULT 'Open',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     resolved_at TIMESTAMP NULL,
     resolved_by INT NULL,
@@ -68,7 +68,7 @@ CREATE TABLE fault_notes (
 
 CREATE TABLE warnings (
     warning_id INT AUTO_INCREMENT PRIMARY KEY,
-    is_active ENUM('True','False') DEFAULT 'True',
+    is_active ENUM('True','False') DEFAULT 'False',
     resolved_at TIMESTAMP NULL,
     resolved_by INT NULL,
     machine_id INT,
