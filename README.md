@@ -29,7 +29,7 @@
 
 <h1>Start</h1>
 
-<h2> Database Schema  [in process] </h2>
+<h2> Database Schema  [in progress] </h2>
 In order to contruct back-end properly, we need a proper database schema.
 The code can be found in <code>database.sql</code>.
 Based on that, you'll create models. One table - one Django model.
