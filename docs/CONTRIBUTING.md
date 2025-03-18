@@ -5,81 +5,16 @@ This document explains how to set up the project, contribute code, and collabora
 ---
 
 ## Table of Contents
-1. [Project Overview](#project-overview)
-2. [Local Setup](#local-setup)
-3. [Branching & Workflow](#branching--workflow)
-4. [Coding Guidelines](#coding-guidelines)
-5. [Code Review & Pull Requests](#code-review--pull-requests)
-6. [Testing & QA](#testing--qa)
-7. [Documentation](#documentation)
-8. [Releases & Deployment](#releases--deployment)
-9. [Support & Contact](#support--contact)
+1. [Branching & Workflow](#branching--workflow)
+2. [Coding Guidelines](#coding-guidelines)
+3. [Code Review & Pull Requests](#code-review--pull-requests)
+4. [Testing & QA](#testing--qa)
+5. [Documentation](#documentation)
+6. [Releases & Deployment](#releases--deployment)
+7. [Support & Contact](#support--contact)
 
 ---
 
-## Project Overview
-
-**Name:** Factory Machinery Status & Repair Tracking System  
-**Purpose:** A web application (Django + Docker) that allows ACME Manufacturing Corp. to track machine statuses, manage faults and repairs, and generate management reports.
-
-### Key Technologies
-- **Python 3.11 (Django framework)**
-- **Docker & Docker Compose**
-- **PostgreSQL** (configurable using `dj-database-url`)
-- **HTML/CSS + JavaScript** (front-end)
-- **GitHub Issues & Projects** (task management)
-
----
-
-## Local Setup
-
-1. **Clone the Repository**  
-   ```bash
-   git clone git@github.com:groupProjectDCU/manufactureWatch.git
-   cd manufactureWatch
-   ```
-
-2. **Create a Virtual Environment**  (recommended)
-    ```bash
-    # option1: using venv
-    python -m venv venv
-    source venv/bin/activate # On Windows: venv\Scripts\activate
-
-    # option2: using conda
-    conda create -n manufactureWatch python=3.11
-    conda activate manufactureWatch
-    ```
-
-3. **Install Dependencies**
-    ```bash
-    pip install -r requirements.txt
-    ```
-
-4. **Set Up Database**
-    ```bash
-    python manage.py migrate
-    ```
-
-5. **Run Development Server**
-    ```bash
-    python manage.py runserver
-    ```
-    visit http://127.0.0.1:8000/ to see the app.
-
----
-
-## Docker Usage (optional)
-If you prefer using Docker for local development:
-
-```
-# Build the image
-docker build -t your_image_name .
-
-# Run the container
-docker run -p 8000:8000 -e DB_URL=your_database_url your_image_name
-```
-
----
 
 ## Branching & Workflow
 We use a simplified **GitHub Flow**:
