@@ -29,6 +29,18 @@
 
 <h1>Start</h1>
 
+<h2> Database Schema  [in process] </h2>
+In order to contruct back-end properly, we need a proper database schema.
+The code can be found in <code>database.sql</code>.
+Based on that, you'll create models. One table - one Django model.
+Diagrams:
+
+
+1) ![Imgur](https://imgur.com/f9IaWjw.png)
+
+
+2) ![img](https://imgur.com/R6PA4hx.png)
+
 <h2>Main page</h2>
 
 To run app, use ``python manage.py runserver``. Click on the localhost url.
