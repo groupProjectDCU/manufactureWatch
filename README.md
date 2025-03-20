@@ -13,7 +13,7 @@
 
 ---
 
-## Local Setup
+## Set Up Option 1: Local Setup
 
 1. **Clone the Repository**  
    ```bash
@@ -59,15 +59,61 @@
 
 ---
 
-## Docker Usage (optional)
-If you prefer using Docker for local development:
+## Set Up Option 2: Docker Usage (Recommended)
+We provide a Dockerfile and a docker-compose.yml that can build and run the website. This setup allows you to configure the SQL database at runtime using environment variables (e.g., DATABASE_URL or POSTGRES_USER, POSTGRES_PASSWORD, etc.), and automatically applies SQL migrations when the container starts. You may also mount a Docker volume for persistent file storage. The website will be fully operational even with a fresh blank database.
 
+1. Build & Run with Docker Compose
+    1. Create/Update .env (if needed)
+- In the project root, you can create a file named .env to define environment variables like:
+```
+POSTGRES_USER=myuser
+POSTGRES_PASSWORD=mysecretpassword
+POSTGRES_DB=mydatabase
+DB_HOST=db
+DB_PORT=5432
+```
+alternatively, you can use the .env.example file as a template and modify the values as needed.
+```
+cp .env.example .env
+```
+
+    2. Build & Start
+```
+docker compose build
+docker compose up
+```
+    - docker compose build pulls and builds the necessary images.
+    - docker compose up starts the web (Django) and db (Postgres) containers.
+
+    3. Check the App
+    - Once containers start, go to http://localhost:8000.
+    - Django will run migrations automatically on container startup, so you don’t need any manual steps for an empty database.
+    4. Stop the Containers
+```
+docker compose down
+```
+
+2. Loading Test Data
+    - You can include test data in your migrations or provide fixtures.
+    - If you have a fixture like initial_data.json, you can modify the entrypoint.sh (or a similar startup script) to run:
+```
+python manage.py loaddata initial_data.json
+```
+
+3. Persistent Storage
+    - The docker-compose.yml defines a volume for PostgreSQL data (pgdata:/var/lib/postgresql/data) to persist your database across container restarts.
+    - If your app requires file uploads, you can also map a volume for file storage (e.g., media/ folder).
+
+4. Manual One-Container Approach
+    - If you prefer to run a single container (without Compose), you can still build and run it manually:
 ```
 # Build the image
 docker build -t your_image_name .
 
-# Run the container
-docker run -p 8000:8000 -e DB_URL=your_database_url your_image_name
+# Run the container, specifying environment variables as needed
+docker run -p 8000:8000 \
+  -e DATABASE_URL="postgres://myuser:mysecretpassword@host:5432/mydatabase" \
+  your_image_name
 ```
 
 ---
@@ -76,7 +122,7 @@ docker run -p 8000:8000 -e DB_URL=your_database_url your_image_name
     
 Each app in Django serves a specific concern in your application:
 
-- **Core**
+- **core**
     - Contains shared functionality, base templates, and utilities used throughout the project.
 
 - **accounts**
