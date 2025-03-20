@@ -125,7 +125,10 @@ Here’s our high-level ERD. For a larger view, see [the diagram on Imgur](https
 2. **Machinery → Fault Cases**: One machine can have multiple faults.  
 3. **Machinery → Warnings**: One machine can have multiple warnings.  
 4. **Fault Cases → Fault Notes**: Each fault can have many notes.  
-5. **User**: Linked to fault cases (created_by, resolved_by), warnings (added_by, resolved_by), and machine assignments(assigned_to, assigned_by).
+5. **User ↔ Machinery Assignment**: Many-to-many via `machinery_assignment`.  One person can be assigned to multiple machines and one machine can be assigned to multiple users.
+6. **User ↔ Fault Cases**: Many-to-many via `fault_cases`. One user can create multiple fault cases and one fault case can have multiple users who created it or resolved it,e.g. a manager can create a fault case and a technician can resolve it.
+7. **User ↔ Warnings**: Many-to-many via `warnings`. One user can add multiple warnings and one warning can have multiple users who added it or resolved it, e.g. a technician can add a warning and a manager can resolve it.
+
 
 ---
 
