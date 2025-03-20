@@ -1,7 +1,11 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
-class User(AbstractUser):  #django's built-in user authentication
+class User(AbstractUser):  #django's built-in user authentication - abstract user includes email & password
+    user_id = models.BigAutoField(primary_key=True) #explicit primary key
+    first_name = models.CharField(max_length=255, unique=True)    #can change if necessary
+    last_name = models.CharField(max_length=255, unique=True)  #ditto
+    
     ROLES = [
         ('Technician', 'Technician'),
         ('Repair', 'Repair'),
