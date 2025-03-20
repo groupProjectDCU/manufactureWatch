@@ -5,7 +5,7 @@ CREATE TABLE users (
     user_id INT AUTO_INCREMENT PRIMARY KEY,
     first_name VARCHAR(255) UNIQUE NOT NULL,
     last_name VARCHAR(255) UNIQUE NOT NULL,
-    email VARCHAR(255) NOT NULL
+    email VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL,
     role ENUM('Technician', 'Repair', 'Manager','View-only') DEFAULT 'View-only'
 );
@@ -16,15 +16,20 @@ CREATE TABLE machinery (
     model VARCHAR(255) NOT NULL,
     description VARCHAR(255) NOT NULL,
     status ENUM('OK', 'Warning', 'Fault') DEFAULT 'OK',
-    priority INT DEFAULT 0,
+    priority INT DEFAULT 0
 );
 
-CREATE TABLE machinery_assigment (
+CREATE TABLE machinery_assignment (
     assignment_id INT AUTO_INCREMENT PRIMARY KEY,
     is_active ENUM('True','False') DEFAULT 'True',
     assigned_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     machine_id INT,
+    user_id INT,
+    assigned_to INT,
+    assigned_by INT,
     FOREIGN KEY (machine_id) REFERENCES machinery(machine_id) ON DELETE CASCADE,
+    FOREIGN KEY (assigned_to) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (assigned_by) REFERENCES users(user_id) ON DELETE CASCADE,
     );
 
 CREATE TABLE collections (
@@ -37,9 +42,9 @@ CREATE TABLE collections (
 CREATE TABLE machinery_collections (
     mach_coll_id INT AUTO_INCREMENT PRIMARY KEY,
     collection_id INT,
-    machinery_id INT,
+    machine_id INT,
     FOREIGN KEY (machine_id) REFERENCES machinery(machine_id) ON DELETE CASCADE,
-    FOREIGN KEY (collection_id) REFERENCES collections(collections_id) ON DELETE CASCADE,
+    FOREIGN KEY (collection_id) REFERENCES collections(collection_id) ON DELETE CASCADE,
     );
 
 CREATE TABLE fault_cases (
