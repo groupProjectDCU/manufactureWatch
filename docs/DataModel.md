@@ -45,7 +45,7 @@ Here’s our high-level ERD. For a larger view, see [the diagram on Imgur](https
 | **last_name**    | varchar  | Required |
 | **email**        | varchar  | Required |
 | **password**     | varchar  | Required |
-| **role**         | enum     | One of `MANAGER`, `TECHNICIAN`, `REPAIR`. |
+| **role**         | enum     | One of `MANAGER`, `TECHNICIAN`, `REPAIR`, `View-only` default `View-only`. |
 
 ### 3.2 Machinery
 | Field          | Type     | Description                             |
@@ -54,14 +54,14 @@ Here’s our high-level ERD. For a larger view, see [the diagram on Imgur](https
 | **name**       | varchar  | Display name (e.g., “Conveyor Belt #2”).   |
 | **model**      | varchar  | Optional field for machine’s model/type.   |
 | **description**| varchar  | Longer text describing the machine.        |
-| **status**     | enum     | `OK`, `WARNING`, or `FAULT`.               |
+| **status**     | enum     | `OK`, `WARNING`, or `FAULT`.  Default `OK`             |
 | **priority**   | int      | Higher number = more important.      |
 
 ### 3.3 Warnings
 | Field         | Type     | Description                                     |
 |---------------|----------|-------------------------------------------------|
 | **warning_id** (PK) | bigint   | Unique warning identifier.                    |
-| **is_active** | boolean | True if the warning is still relevant.            |
+| **is_active** | boolean | True if the warning is still relevant. Default `False`            |
 | **machine_id** (FK) | int  | Links to the `machinery` table.                |
 | **message**   | text    | Description of the warning.                       |
 | **added_by**  | int (FK)| The user who created this warning.                |
@@ -75,7 +75,7 @@ Here’s our high-level ERD. For a larger view, see [the diagram on Imgur](https
 | **case_id** (PK)   | bigint   | Unique fault case ID.                                |
 | **machine_id** (FK)| int      | References `machinery`.                             |
 | **created_by** (FK)| int      | The user who reported the fault.                    |
-| **status**   | enum     | Could be `OPEN`, `RESOLVED`, etc.                        |
+| **status**   | enum     | Could be `OPEN`, `IN PROGRESS`, `RESOLVED`. Default `OPEN`                        |
 | **created_at**| timestamp | Fault creation time.                                   |
 | **resolved_at**| timestamp | Time the fault was closed.                            |
 | **resolved_by** (FK)| int  | User who resolved the fault (Repair or Manager).      |
@@ -110,7 +110,7 @@ Here’s our high-level ERD. For a larger view, see [the diagram on Imgur](https
 | Field         | Type     | Description                                       |
 |---------------|----------|---------------------------------------------------|
 | **assignment_id** (PK) | bigint   | Unique record ID.                            |
-| **is_active** | boolean | True if the assignment is currently valid.         |
+| **is_active** | boolean | True if the assignment is currently valid. Default `True`         |
 | **assigned_at**| timestamp | Date/time of the assignment.                     |
 | **machine_id** (FK) | int| Links to the `machinery` table.                   |
 | **assigned_by** (FK)  | int| The manager who created the assignment.       |
