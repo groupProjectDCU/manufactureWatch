@@ -32,17 +32,26 @@
     conda activate manufactureWatch
     ```
 
-3. **Install Dependencies**
+3. **Install Postgres**
+    - Windows: 
+      - Download installer from postgresql.org
+    - macOS: 
+      - ````brew install postgresql````
+    - Linux: 
+      - ````apt install postgresql postgresql-contrib````
+
+
+4. **Install Dependencies**
     ```bash
     pip install -r requirements.txt
     ```
 
-4. **Set Up Database**
+5. **Set Up Database**
     ```bash
     python manage.py migrate
     ```
 
-5. **Run Development Server**
+6. **Run Development Server**
     ```bash
     python manage.py runserver
     ```
