@@ -1,0 +1,28 @@
+[
+    {
+        "model": "repairs.warning",
+        "pk": 1,
+        "fields": {
+            "is_active": true,
+            "machine": 2,
+            "message": "Unusual vibration detected in packaging unit",
+            "added_by": 4,
+            "created_at": "2025-03-20T16:00:00Z",
+            "resolved_by": null,
+            "resolved_at": null
+        }
+    },
+    {
+        "model": "repairs.warning",
+        "pk": 2,
+        "fields": {
+            "is_active": false,
+            "machine": 1,
+            "message": "Minor temperature fluctuation",
+            "added_by": 5,
+            "created_at": "2025-03-19T10:00:00Z",
+            "resolved_by": 2,
+            "resolved_at": "2025-03-19T14:30:00Z"
+        }
+    }
+] 

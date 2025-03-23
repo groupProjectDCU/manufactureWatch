@@ -1,30 +1,34 @@
 from django.db import models
+from accounts.models import User
 
-# Create your models here.
+
 class Machinery(models.Model):
     STATUS_CHOICES = [
         ('OK', 'OK'),
-        ('Warning', 'Warning'),
-        ('Fault', 'Fault'),
+        ('WARNING', 'Warning'),
+        ('FAULT', 'Fault'),
     ]
-
+    
     machine_id = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=100)
-    model = models.CharField(max_length=255)
-    description = models.TextField(blank=True)
+    model = models.CharField(max_length=255, blank=True)
+    description = models.TextField()
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='OK')
     priority = models.IntegerField(default=0)
-
+    
     def __str__(self):
         return f"{self.name} ({self.model})"
-        
+    
+    class Meta:
+        verbose_name_plural = "Machinery"
+
 class Collection(models.Model):
     collection_id = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=255)
-    description = models.TextField()
+    description = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     machines = models.ManyToManyField(Machinery, through='MachineryCollection')
-
+    
     def __str__(self):
         return self.name
 
@@ -35,6 +39,9 @@ class MachineryCollection(models.Model):
 
     def __str__(self):
         return f"{self.machinery.name} in {self.collection.name}"
+    
+    class Meta:
+        unique_together = ('collection', 'machinery')
 
 class MachineryAssignment(models.Model):
     assignment_id = models.BigAutoField(primary_key=True)
@@ -46,11 +53,3 @@ class MachineryAssignment(models.Model):
     
     def __str__(self):
         return f"{self.machine.name} assigned to {self.assigned_to.get_full_name()}"
-
-class Meta:
-    unique_together = ('collection,' 'machinery')
-    
-class Meta:
-        verbose_name_plural = "Machinery"
-
-

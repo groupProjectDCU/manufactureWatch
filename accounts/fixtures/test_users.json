@@ -1,0 +1,155 @@
+[
+  {
+    "model": "accounts.user",
+    "pk": 1,
+    "fields": {
+      "password": "pbkdf2_sha256$600000$hGT7rrGZgYXqJnLUZ9Fvat$+MbQGY2MKC7+pt7ZhV6R+2+B6TBX1BAaE1GZ7WM3+I0=",
+      "last_login": "2025-03-20T14:00:00Z",
+      "is_superuser": true,
+      "username": "ad",
+      "first_name": "Ad",
+      "last_name": "User",
+      "email": "ad@example.com",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2025-03-01T10:00:00Z",
+      "role": "MANAGER"
+    }
+  },
+  {
+    "model": "accounts.user",
+    "pk": 2,
+    "fields": {
+      "password": "pbkdf2_sha256$600000$hGT7rrGZgYXqJnLUZ9Fvat$+MbQGY2MKC7+pt7ZhV6R+2+B6TBX1BAaE1GZ7WM3+I0=",
+      "last_login": "2025-03-20T14:30:00Z",
+      "is_superuser": false,
+      "username": "manager1",
+      "first_name": "John",
+      "last_name": "Manager",
+      "email": "john@example.com",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2025-03-01T11:00:00Z",
+      "role": "MANAGER"
+    }
+  },
+  {
+    "model": "accounts.user",
+    "pk": 3,
+    "fields": {
+      "password": "pbkdf2_sha256$600000$hGT7rrGZgYXqJnLUZ9Fvat$+MbQGY2MKC7+pt7ZhV6R+2+B6TBX1BAaE1GZ7WM3+I0=",
+      "last_login": "2025-03-20T15:00:00Z",
+      "is_superuser": false,
+      "username": "manager2",
+      "first_name": "Sarah",
+      "last_name": "Director",
+      "email": "sarah@example.com",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2025-03-02T09:00:00Z",
+      "role": "MANAGER"
+    }
+  },
+  {
+    "model": "accounts.user",
+    "pk": 4,
+    "fields": {
+      "password": "pbkdf2_sha256$600000$hGT7rrGZgYXqJnLUZ9Fvat$+MbQGY2MKC7+pt7ZhV6R+2+B6TBX1BAaE1GZ7WM3+I0=",
+      "last_login": "2025-03-20T16:00:00Z",
+      "is_superuser": false,
+      "username": "tech1",
+      "first_name": "Mike",
+      "last_name": "Technician",
+      "email": "mike@example.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-03-03T10:00:00Z",
+      "role": "TECHNICIAN"
+    }
+  },
+  {
+    "model": "accounts.user",
+    "pk": 5,
+    "fields": {
+      "password": "pbkdf2_sha256$600000$hGT7rrGZgYXqJnLUZ9Fvat$+MbQGY2MKC7+pt7ZhV6R+2+B6TBX1BAaE1GZ7WM3+I0=",
+      "last_login": "2025-03-20T16:30:00Z",
+      "is_superuser": false,
+      "username": "tech2",
+      "first_name": "Lisa",
+      "last_name": "Engineer",
+      "email": "lisa@example.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-03-04T11:00:00Z",
+      "role": "TECHNICIAN"
+    }
+  },
+  {
+    "model": "accounts.user",
+    "pk": 6,
+    "fields": {
+      "password": "pbkdf2_sha256$600000$hGT7rrGZgYXqJnLUZ9Fvat$+MbQGY2MKC7+pt7ZhV6R+2+B6TBX1BAaE1GZ7WM3+I0=",
+      "last_login": "2025-03-20T17:00:00Z",
+      "is_superuser": false,
+      "username": "repair1",
+      "first_name": "Alex",
+      "last_name": "Repair",
+      "email": "alex@example.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-03-05T09:00:00Z",
+      "role": "REPAIR"
+    }
+  },
+  {
+    "model": "accounts.user",
+    "pk": 7,
+    "fields": {
+      "password": "pbkdf2_sha256$600000$hGT7rrGZgYXqJnLUZ9Fvat$+MbQGY2MKC7+pt7ZhV6R+2+B6TBX1BAaE1GZ7WM3+I0=",
+      "last_login": "2025-03-20T17:30:00Z",
+      "is_superuser": false,
+      "username": "repair2",
+      "first_name": "Emma",
+      "last_name": "Fixer",
+      "email": "emma@example.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-03-06T10:00:00Z",
+      "role": "REPAIR"
+    }
+  },
+  {
+    "model": "accounts.user",
+    "pk": 8,
+    "fields": {
+      "password": "pbkdf2_sha256$600000$hGT7rrGZgYXqJnLUZ9Fvat$+MbQGY2MKC7+pt7ZhV6R+2+B6TBX1BAaE1GZ7WM3+I0=",
+      "last_login": "2025-03-20T18:00:00Z",
+      "is_superuser": false,
+      "username": "viewer1",
+      "first_name": "Tom",
+      "last_name": "Viewer",
+      "email": "tom@example.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-03-07T11:00:00Z",
+      "role": "View-only"
+    }
+  },
+  {
+    "model": "accounts.user",
+    "pk": 9,
+    "fields": {
+      "password": "pbkdf2_sha256$600000$hGT7rrGZgYXqJnLUZ9Fvat$+MbQGY2MKC7+pt7ZhV6R+2+B6TBX1BAaE1GZ7WM3+I0=",
+      "last_login": "2025-03-20T18:30:00Z",
+      "is_superuser": false,
+      "username": "viewer2",
+      "first_name": "Kate",
+      "last_name": "Observer",
+      "email": "kate@example.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-03-08T09:00:00Z",
+      "role": "View-only"
+    }
+  }
+] 
