@@ -1,0 +1,29 @@
+[
+    {
+        "model": "machinery.collection",
+        "pk": 1,
+        "fields": {
+            "name": "Building A",
+            "description": "Main Production Floor",
+            "created_at": "2025-03-20T14:00:00Z"
+        }
+    },
+    {
+        "model": "machinery.collection",
+        "pk": 2,
+        "fields": {
+            "name": "Building B",
+            "description": "Packaging Department",
+            "created_at": "2025-03-20T14:30:00Z"
+        }
+    },
+    {
+        "model": "machinery.collection",
+        "pk": 3,
+        "fields": {
+            "name": "Assembly Line 1",
+            "description": "Primary assembly line machines",
+            "created_at": "2025-03-20T15:00:00Z"
+        }
+    }
+] 

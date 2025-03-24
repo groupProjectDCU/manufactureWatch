@@ -1,0 +1,34 @@
+[
+  {
+    "model": "machinery.machinerycollection",
+    "pk": 1,
+    "fields": {
+      "collection": 1,
+      "machinery": 1
+    }
+  },
+  {
+    "model": "machinery.machinerycollection",
+    "pk": 2,
+    "fields": {
+      "collection": 2,
+      "machinery": 2
+    }
+  },
+  {
+    "model": "machinery.machinerycollection",
+    "pk": 3,
+    "fields": {
+      "collection": 3,
+      "machinery": 1
+    }
+  },
+  {
+    "model": "machinery.machinerycollection",
+    "pk": 4,
+    "fields": {
+      "collection": 3,
+      "machinery": 3
+    }
+  }
+] 

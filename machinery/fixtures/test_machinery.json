@@ -1,0 +1,35 @@
+[
+  {
+    "model": "machinery.machinery",
+    "pk": 1,
+    "fields": {
+      "name": "Conveyor Belt A1",
+      "model": "CB2000",
+      "description": "Main assembly line conveyor belt - Building A",
+      "status": "OK",
+      "priority": 1
+    }
+  },
+  {
+    "model": "machinery.machinery",
+    "pk": 2,
+    "fields": {
+      "name": "Packaging Unit B2",
+      "model": "PK500",
+      "description": "Secondary packaging machine - High speed",
+      "status": "WARNING",
+      "priority": 2
+    }
+  },
+  {
+    "model": "machinery.machinery",
+    "pk": 3,
+    "fields": {
+      "name": "Robot Arm C3",
+      "model": "RA1000",
+      "description": "Assembly line robotic arm - Precision tasks",
+      "status": "FAULT",
+      "priority": 3
+    }
+  }
+] 

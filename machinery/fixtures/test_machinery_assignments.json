@@ -1,0 +1,46 @@
+[
+  {
+    "model": "machinery.machineryassignment",
+    "pk": 1,
+    "fields": {
+      "is_active": true,
+      "assigned_at": "2025-03-10T10:00:00Z",
+      "machine": 1,
+      "assigned_by": 2,
+      "assigned_to": 4
+    }
+  },
+  {
+    "model": "machinery.machineryassignment",
+    "pk": 2,
+    "fields": {
+      "is_active": true,
+      "assigned_at": "2025-03-11T11:00:00Z",
+      "machine": 2,
+      "assigned_by": 2,
+      "assigned_to": 5
+    }
+  },
+  {
+    "model": "machinery.machineryassignment",
+    "pk": 3,
+    "fields": {
+      "is_active": true,
+      "assigned_at": "2025-03-12T09:00:00Z",
+      "machine": 3,
+      "assigned_by": 3,
+      "assigned_to": 6
+    }
+  },
+  {
+    "model": "machinery.machineryassignment",
+    "pk": 4,
+    "fields": {
+      "is_active": false,
+      "assigned_at": "2025-03-05T10:00:00Z",
+      "machine": 1,
+      "assigned_by": 2,
+      "assigned_to": 7
+    }
+  }
+] 
