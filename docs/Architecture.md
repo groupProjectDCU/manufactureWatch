@@ -91,27 +91,33 @@ Docker & Orchestration
 ### 4. API Endpoints
 
 Note: If using Django REST Framework or custom JSON views, these endpoints might differ slightly. Below is an example structure.
-### 4.1.  Machines
-- GET /api/machines/
+### 4.1.  Machineries
+- GET /api/machineries
     - Description: Returns a list of all machines, their status, assigned users, etc.
     - Permissions: Any authenticated user can see machine statuses.
-- POST /api/machines/
-    - Description: Create a new machine entry (Manager role only).
+- GET /api/machineries/<machine_id>
+    - Description: Returns a specific machine.
+    - Permissions: Any authenticated user can see machine statuses.
+- POST /api/machineries/manage
+    - Description: Creates a new machine entry (Manager role only).
+    - Body (JSON):
+- PUT (or PATCH) api/machineries/manage/<machine_id>
+    - Description: Updates a specific machine entry (Manager role only).
     - Body (JSON):
 ```
 {
   "name": "Machine A",
   "location": "Building 1",
-  "importance": 5
+  "priority": 5
 }
 ```
     - Permissions: Manager only.
 
 ### 4.2. Fault Cases
-- GET /api/machines/<machine_id>/faults/
+- GET api/machineries/<machine_id>/faults/
     - Description: List all fault cases for a given machine.
     - Permissions: Manager/Technician/Repair.
-- POST /api/machines/<machine_id>/faults/
+- POST api/machineries/<machine_id>/faults/
     - Description: Create a new fault case for the specified machine (Technician role or external system).
     - Body (JSON):
     ```
@@ -126,10 +132,10 @@ Note: If using Django REST Framework or custom JSON views, these endpoints might
     - Permissions: Repair role or Manager.
 
 ### 4.3. Warnings
-- POST /api/machines/<machine_id>/warnings/
+- POST api/machineries/<machine_id>/warnings/
     - Description: Adds a warning string to the machine’s active warnings.
     - Permissions: Technician role or external system.
-- DELETE /api/machines/<machine_id>/warnings/<warning_id>/
+- DELETE api/machineries/<machine_id>/warnings/<warning_id>/
     - Description: Removes a specified warning.
     - Permissions: Repair or Technician role.
 
