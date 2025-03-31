@@ -45,23 +45,23 @@ class Migration(migrations.Migration):
                 ('assigned_at', models.DateTimeField(auto_now_add=True)),
                 ('assigned_by', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='assignments_created', to=settings.AUTH_USER_MODEL)),
                 ('assigned_to', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='assignments_received', to=settings.AUTH_USER_MODEL)),
-                ('machine', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='machineries.machineries')),
+                ('machine', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='machinery.machinery')),
             ],
         ),
         migrations.CreateModel(
             name='MachineryCollection',
             fields=[
                 ('mach_coll_id', models.BigAutoField(primary_key=True, serialize=False)),
-                ('collection', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='machineries.collection')),
-                ('machineries', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='machineries.machineries')),
+                ('collection', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='machinery.collection')),
+                ('machinery', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='machinery.machinery')),
             ],
             options={
-                'unique_together': {('collection', 'machineries')},
+                'unique_together': {('collection', 'machinery')},
             },
         ),
         migrations.AddField(
             model_name='collection',
             name='machines',
-            field=models.ManyToManyField(through='machineries.MachineryCollection', to='machineries.machineries'),
+            field=models.ManyToManyField(through='machinery.MachineryCollection', to='machinery.machinery'),
         ),
     ]
