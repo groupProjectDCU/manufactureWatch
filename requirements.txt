@@ -5,3 +5,4 @@ dj-database-url==2.1.0
 djangorestframework==3.16.0
 django-filter==25.1
 django-extensions==3.2.3
+djangorestframework-simplejwt==5.3.1 
