@@ -1,46 +1,219 @@
+/* dynamicMenu.css */
 
-.navbar {
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+/* Hamburger trigger styling */
+.menu-tab {
+    position: fixed;
+    top: 80px; 
+    left: 0;
+    background-color: #252625;
+    color: #fff;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    z-index: 9999; 
+    border-radius: 0 4px 4px 0;
+    transition: background-color 0.3s ease-in-out;
+}
+.menu-tab:hover {
+    background-color: #333;
+}
+.menu-tab-icon {
+    font-size: 1.5rem;
 }
 
-.navbar-nav .nav-link {
-    transition: color 0.3s ease-in-out;
+/* Overlay that darkens the screen when menu is open */
+.menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 9998;
+    display: none;
+}
+.menu-overlay.show {
+    display: block;
+    animation: fadeIn 0.3s forwards;
 }
 
-.navbar-nav .nav-link:hover {
-    color: #17a2b8 !important;
+/* Side menu panel styling */
+.dynamic-menu {
+    position: fixed;
+    top: 80px;
+    left: 0;
+    width: 250px;
+    height: calc(100% - 80px);
+    background-color: #252625;
+    transform: translateX(-250px);
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    z-index: 99999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 1rem;
+    opacity: 0;
+}
+.dynamic-menu.show {
+    transform: translateX(0);
+    opacity: 1;
 }
 
+/* ----------------------------------------------------
+   Override: Move the dynamic menu and hamburger icon up
+   ---------------------------------------------------- */
+   .menu-tab,
+   .dynamic-menu {
+       top: 60px !important; /* Adjust the value as needed */
+   }
+   
 
-footer {
-    background: #222;
-    padding: 20px;
-    font-size: 0.9rem;
+/* Menu list styling */
+.dynamic-menu-list {
+    width: 100%;
+    list-style: none;
+    padding: 0;
+    margin: 0;
 }
-
-footer a {
+.dynamic-menu-list li {
+    width: 100%;
+    border-bottom: 1px solid #444;
+}
+.dynamic-menu-list li a {
+    display: block;
+    width: 100%;
+    color: #fff;
+    padding: 1rem;
     text-decoration: none;
-    transition: color 0.3s ease;
+    transition: background 0.3s;
+}
+.dynamic-menu-list li a:hover {
+    background-color: #333;
 }
 
-footer a:hover {
-    color: #17a2b8 !important;
+/* ----------------------------------------------------
+   Override: Adjust the hamburger icon and menu to fix
+   it near the top, matching your attached screenshot
+   ---------------------------------------------------- */
+   .menu-tab {
+    top: 55px !important;     /* Adjust as needed for perfect alignment */
+    left: 0px !important;    /* Move left if you want it flush with the edge */
+    background-color: #040404 !important; /* Matches Bootstrap .navbar-dark.bg-dark */
+}
+
+.dynamic-menu {
+    top: 0 !important;        /* Let the menu slide down from the very top */
+}
+
+/* -----------------------------------------------
+   Override to reduce the gap between the menu 
+   and the top navbar
+   ----------------------------------------------- */
+
+/* Adjust these values as needed for perfect alignment */
+.menu-tab {
+    top: 55px !important; 
+}
+
+.dynamic-menu {
+    top: 55px !important;
 }
 
 
-/* Styling for the images section */
-.row img {
-    transition: transform 0.3s ease-in-out;
-    border: 3px solid #dee2e6;
+/* ---------------------------------------------------------
+   Override: Hide specific nav items (Home, About, Contact, Login)
+   without removing or altering existing HTML
+   --------------------------------------------------------- */
+   .navbar-nav .nav-item a[href="home.html"],
+   .navbar-nav .nav-item a[href="about.html"],
+   .navbar-nav .nav-item a[href="contact.html"],
+   .navbar-nav .nav-item a[href="login.html"] {
+       display: none !important;
+   }
+
+
+   /* ---------------------------------------------------------
+   1) Reveal the "Login" link again (previously hidden)
+   2) Make it appear on the right side of the navbar
+   --------------------------------------------------------- */
+
+/* First, override the rule that hides all nav links */
+.navbar-nav .nav-item a[href="login.html"] {
+    display: inline-block !important;
+  }
+  
+  /* Optional: Give it a "button-like" appearance 
+     (comment these lines if you want a standard link) */
+  .navbar-nav .nav-item a[href="login.html"] {
+    background-color: #0d6efd;  /* Bootstrap primary color */
+    color: #fff !important;
+    padding: 8px 16px;
+    border-radius: 4px;
+    text-decoration: none;
+    margin-left: auto !important; /* push it to the far right if other items become visible */
+  }
+  
+  /* Hover effect (only applies if you use the "button-like" style above) */
+  .navbar-nav .nav-item a[href="login.html"]:hover {
+    background-color: #0b5ed7; /* slightly darker shade */
+  }
+  
+   
+  /* ---------------------------------------------------------
+   1) Hide "Home," "About," and "Contact" 
+   2) Keep "Login" visible
+   3) Force the navbar to align visible items to the right
+   --------------------------------------------------------- */
+
+/* Hide unwanted links */
+.navbar-nav .nav-item a[href="home.html"],
+.navbar-nav .nav-item a[href="about.html"],
+.navbar-nav .nav-item a[href="contact.html"] {
+  display: none !important;
 }
 
-.row img:hover {
-    transform: scale(1.05);
+/* Ensure the .navbar-collapse is a flex container aligned right */
+.navbar .collapse.navbar-collapse {
+  display: flex !important;
+  justify-content: flex-end !important;
 }
 
-.row p {
-    font-size: 1rem;
-    font-weight: 500;
-    color: #333;
+/* Show the "Login" link and style it as a button (optional) */
+.navbar-nav .nav-item a[href="login.html"] {
+  display: inline-block !important;
+  background-color: #0d6efd; /* Bootstrap primary */
+  color: #fff !important;
+  padding: 8px 16px;
+  border-radius: 4px;
+  text-decoration: none;
+  margin-right: 1rem !important; /* spacing from the right edge */
 }
 
+/* Hover effect for the "Login" button */
+.navbar-nav .nav-item a[href="login.html"]:hover {
+  background-color: #0b5ed7; /* slightly darker shade */
+}
+
+
+
+/* Override the margin-right on the Login button to remove the gap */
+.navbar-nav .nav-item a[href="login.html"] {
+    margin-right: 0 !important;
+  }
+  
+  /* Remove padding-right from the container inside the navbar to align the button flush with the edge */
+  .navbar .container {
+    padding-right: 0 !important;
+  }
+  
+  /* Ensure the navbar-nav itself has no extra padding or margin on the right */
+  .navbar-nav {
+    padding-right: 0 !important;
+    margin-right: 0 !important;
+  }
+  
+
+/* Simple fadeIn animation for overlay */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
