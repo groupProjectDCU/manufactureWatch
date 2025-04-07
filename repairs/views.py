@@ -36,11 +36,17 @@ def fault_case_detail(request, case_id):
 def fault_case_create(request):
     """
     View to create a new fault case.
+    - Only technicians can create a fault case.
     - Handles both GET and POST requests.
     - On GET, displays an empty form for creating a new fault case.
     - On POST, validates the form data and saves the new fault case to the database. Redirects to the detail view of the newly created fault case.
     - Passes the form to the 'fault_form.html' template for rendering.
     """
+
+    if not request.user.role == 'TECHNICIAN': # Check if the user is a technician
+        # If the user is not a technician, redirect to the fault case list page
+        return render(request, '403.html', status=403) # Render a 403 Forbidden page
+    
     if request.method == 'POST':
         form = FaultCaseForm(request.POST) # Bind the submitted data to the form
         # Validate the form data
@@ -48,9 +54,14 @@ def fault_case_create(request):
             fault = form.save(commit=False) # Create a new FaultCase instance but don't save it yet
             fault.created_by = request.user # Set the user who created the fault case
             fault.save() # Save the fault case to the database
-            return redirect('fault_case_detail', case_id=fault.id) # Redirect to the detail view of the newly created fault case
+
+            # Fetch related notes for the fault case
+            notes = FaultNote.objects.filter(fault_case=fault).order_by('-created_at') # Fetch all notes related to the fault case
+
+            return render(request, 'repairs/fault_detail.html', {'fault_case': fault, 'notes': notes}) # Render the fault detail directly. 
     else:
         form = FaultCaseForm() # Create an empty form for GET requests
+
     return render(request, 'repairs/fault_form.html', {'form': form}) # Render the form template
 
 @login_required
