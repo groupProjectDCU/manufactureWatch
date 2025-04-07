@@ -1,28 +1,30 @@
 from django.urls import path
 from . import views # Import the views from the current module
 
-app_name = 'repairs' # Define the app name for namespacing URLs
+app_name = "repairs"
 
-# Define URL patterns for the repairs app
-# These patterns map URL paths to the corresponding view functions
+"""
+All routes for fault case tracking are defined here.
+    - User-facing:
+        - GET /repairs/faults/                             → View all fault cases
+        - GET /repairs/faults/<uuid:fault_case_id>/        → View a specific fault case
+        - GET /repairs/faults/create/                      → Create a new fault case (technician only)
+        - GET /repairs/faults/<uuid:fault_case_id>/update/ → Update a fault case
+        - GET /repairs/faults/<uuid:fault_case_id>/fault_note_create/ → Add a note to a specific fault case
+"""
 urlpatterns = [
-    # URL pattern for the fault case list view
-    # Example: /faults/
+    # URL: /repairs/faults/
     path('faults/', views.fault_case_list, name='fault_case_list'),
 
-    # URL pattern for the fault case detail view, with a UUID 
-    # Example: /faults/<uuid:fault_case_id>/
+    # URL: /repairs/faults/<uuid:fault_case_id>/
     path('faults/<uuid:fault_case_id>/', views.fault_case_detail, name='fault_case_detail'),
 
-    # URL pattern for the fault case creation view
-    # Example: /faults/create/
+    # URL: /repairs/faults/create/
     path('faults/create/', views.fault_case_create, name='fault_case_create'),
 
-    # URL for updating an existing fault case, with a UUID
-    # Example: /faults/<uuid:fault_case_id>/update/
+    # URL: /repairs/faults/<uuid:fault_case_id>/update/
     path('faults/<uuid:fault_case_id>/update/', views.fault_case_update, name='fault_case_update'),
 
-    # URL for creating a new fault note for a specific fault case, with a UUID
-    # Example: /faults/<uuid:fault_case_id>/fault_note_create/
+    # URL: /repairs/faults/<uuid:fault_case_id>/fault_note_create/
     path('faults/<uuid:fault_case_id>/fault_note_create/', views.fault_note_create, name='fault_note_create'),
 ]

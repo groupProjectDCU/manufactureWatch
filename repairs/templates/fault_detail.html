@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{# Inject content into the base template's content block #}
+{% block content %}
+<main class="flex-grow-1 pt-5 mt-5">
+    <div class="container">
+        {# Page title #}
+        <h2 class="text-center mb-4">Fault Case Details</h2>
+
+        {# Card displaying main fault case information #}
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Machine: {{ fault_case.machine.name }}</h5>
+
+                {# Status badge with color based on value #}
+                <p><strong>Status:</strong>
+                    <span class="badge
+                        {% if fault_case.status == 'OPEN' %}bg-danger
+                        {% elif fault_case.status == 'IN_PROGRESS' %}bg-warning
+                        {% elif fault_case.status == 'RESOLVED' %}bg-success
+                        {% endif %}">
+                        {{ fault_case.get_status_display }}
+                    </span>
+                </p>
+
+                {# Priority of the fault #}
+                <p><strong>Priority:</strong> {{ fault_case.get_priority_display }}</p>
+
+                {# Date and time when the fault case was created #}
+                <p><strong>Created At:</strong> {{ fault_case.created_at|date:"Y-m-d H:i" }}</p>
+
+                {# Assigned repair technician (if any) #}
+                <p><strong>Assigned To:</strong> {{ fault_case.assigned_to.get_full_name|default:"—" }}</p>
+
+                {# Calculated number of days the fault has been open #}
+                <p><strong>Days Open:</strong> {{ fault_case.days_open }}</p>
+
+                {# Description of the fault #}
+                <p><strong>Description:</strong><br>{{ fault_case.description }}</p>
+            </div>
+        </div>
+
+        {# Notes/updates associated with the fault case #}
+        <h4>Repair Notes</h4>
+
+        {% if notes %}
+            <ul class="list-group mb-4">
+                {% for note in notes %}
+                    <li class="list-group-item">
+                        <strong>{{ note.user.get_full_name }}</strong>
+                        <small class="text-muted">({{ note.created_at|date:"Y-m-d H:i" }})</small><br>
+                        {{ note.note }}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="text-muted">No notes available for this case.</p>
+        {% endif %}
+
+        {# Button to add a new note to this fault case #}
+        <a href="{% url 'repairs:fault_note_create' fault_case.case_id %}" class="btn btn-secondary">Add Note</a>
+
+        {# Button to update a fault case #}
+        <a href="{% url 'repairs:fault_case_update' fault_case.case_id %}" class="btn btn-warning">Update Fault Case</a>
+    </div>
+</main>
+{% endblock %}
