@@ -203,12 +203,6 @@ Each app in Django serves a specific concern in your application:
 - **repairs**
     - Contains the fault case management system, including fault entries, images, and repair history.
 
-- **api**
-    - Provides REST API endpoints for:
-        - External monitoring systems to report warnings/faults
-        - Machine status viewing
-        - Fault case management
-
 - **dashboard**
     - Handles visualization, reporting, and data presentation for different user roles.
 
@@ -237,10 +231,3 @@ When you enter you app, you'll see the entry/main page:
 
 This view comes from ``core`` directory. ``Core`` directory is our main directory.
 
-## Machines page
-
-All machines would be here, ```/machinery```.
-
-![img](https://i.imgur.com/sgu0NJy.png)
-
-To access a particular machine: ````/machinery/machine1````
