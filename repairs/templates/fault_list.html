@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block content %}
+<main class="flex-grow-1 d-flex align-items-center justify-content-center pt-5 mt-5">
+    <div class="container">
+        <h2 class="text-center mb-4">All Fault Cases</h2>
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Case ID</th>
+                    <th>Machine</th>
+                    <th>Status</th>
+                    <th>Priority</th>
+                    <th>Created</th>
+                    <th>Assigned To</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for fault in faults %}
+                <tr>
+                    <td>{{ fault.case_id }}</td>
+                    <td>{{ fault.machine.name }}</td>
+                    <td>
+                        <span class="badge
+                            {% if fault.status == 'OPEN' %}bg-danger
+                            {% elif fault.status == 'IN_PROGRESS' %}bg-warning
+                            {% elif fault.status == 'RESOLVED' %}bg-success
+                            {% endif %}">
+                            {{ fault.get_status_display }}
+                        </span>
+                    </td>
+                    <td>{{ fault.get_priority_display }}</td>
+                    <td>{{ fault.created_at|date:"Y-m-d H:i" }}</td>
+                    <td>{{ fault.assigned_to.get_full_name|default:"—" }}</td>
+                    <td><a href="{% url 'repairs:fault_case_detail' fault.case_id %}" class="btn btn-sm btn-primary">View</a></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</main>
+{% endblock %}
