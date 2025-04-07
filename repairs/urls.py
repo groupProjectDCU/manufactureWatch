@@ -1,6 +1,8 @@
 from django.urls import path
 from . import views # Import the views from the current module
 
+app_name = 'repairs' # Define the app name for namespacing URLs
+
 # Define URL patterns for the repairs app
 # These patterns map URL paths to the corresponding view functions
 urlpatterns = [
