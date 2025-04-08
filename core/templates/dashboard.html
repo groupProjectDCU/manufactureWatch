@@ -5,8 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Factory Machinery Tracking System</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { overflow-x: hidden; }
+        #sidebarMenu {
+            height: 100vh; position: fixed; top: 0; left: -250px;
+            width: 250px; background-color: #343a40; transition: left 0.3s ease;
+            padding-top: 60px; z-index: 1030;
+        }
+        #sidebarMenu a {
+            color: white; padding: 12px; text-decoration: none; display: block;
+        }
+        #sidebarMenu a:hover { background-color: #495057; }
+        #content {
+            transition: margin-left 0.3s ease; padding: 20px; margin-left: 0;
+        }
+        .close-btn {
+            position: absolute; top: 10px; right: 10px;
+            font-size: 24px; color: white; cursor: pointer;
+        }
+    </style>
 </head>
 <body>
+    <button class="btn btn-dark m-3" id="menu-toggle">☰ Menu</button>
+    <div id="sidebarMenu">
+        <span class="close-btn" id="close-sidebar">&times;</span>
+        <h5 class="text-white text-center">Menu</h5>
+        <a href="index.html">🏠 Home</a>
+        <a href="logout.html">🚪 Logout</a>
+    </div>
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
@@ -33,7 +59,92 @@
         </div>
     </div>
 </div>
+<div class="row mt-4">
+    <!-- Machine Statistics -->
+    <div class="col-md-3">
+        <div class="card text-white bg-primary mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Total Machines</h5>
+                <p class="card-text fs-4">128</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-success mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Running</h5>
+                <p class="card-text fs-4">112</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-warning mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Under Maintenance</h5>
+                <p class="card-text fs-4">9</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-danger mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Faulty</h5>
+                <p class="card-text fs-4">7</p>
+            </div>
+        </div>
+    </div>
+</div>
 
+<!-- Recent Activity Feed -->
+<div class="card mt-4">
+    <div class="card-header bg-secondary text-white">
+        Recent Activity
+    </div>
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item">[04-Apr-2025] Machine ID #MX2301 marked for scheduled maintenance by Technician A.</li>
+        <li class="list-group-item">[03-Apr-2025] Repair completed for Machine #BX1122.</li>
+        <li class="list-group-item">[03-Apr-2025] New machine #CX1900 added to the inventory.</li>
+    </ul>
+</div>
+
+<footer class="bg-dark text-white mt-5 pt-4 pb-3 text-center">
+    <div class="container">
+      <p class="mb-1">
+        &copy; 2025 <strong>ACME Manufacturing Corp.</strong> | Factory Machinery Tracking System
+      </p>
+      <div class="mb-2">
+        <a href="#" class="text-white me-3 text-decoration-underline">About</a>
+        <a href="#" class="text-white me-3 text-decoration-underline">Contact</a>
+        <a href="#" class="text-white me-3 text-decoration-underline">Privacy Policy</a>
+        <a href="#" class="text-white text-decoration-underline">Terms of Service</a>
+      </div>
+      <div class="mb-2">
+        Need Help? Visit our <a href="#" class="text-info text-decoration-underline">User Guide</a> or email us at
+        <a href="mailto:acme@gmail.com" class="text-info text-decoration-underline">acme@gmail.com</a>.
+      </div>
+      <div>
+        Follow us on:
+        <a href="#" class="text-primary text-decoration-underline">LinkedIn</a> |
+        <a href="#" class="text-info text-decoration-underline">Twitter</a>
+      </div>
+    </div>
+  </footer>
+  <script>
+    const toggleButton = document.getElementById('menu-toggle');
+    const sidebarMenu = document.getElementById('sidebarMenu');
+    const content = document.getElementById('content');
+    const closeBtn = document.getElementById('close-sidebar');
+
+    toggleButton.addEventListener('click', function () {
+        sidebarMenu.style.left = '0px';
+        content.style.marginLeft = '250px';
+    });
+
+    closeBtn.addEventListener('click', function () {
+        sidebarMenu.style.left = '-250px';
+        content.style.marginLeft = '0';
+    });
+</script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
