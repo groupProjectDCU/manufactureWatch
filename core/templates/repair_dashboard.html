@@ -1,42 +1,193 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Repair Dashboard</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>View Users</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <style>
+    body { overflow-x: hidden; }
+    #sidebarMenu {
+      height: 100vh;
+      position: fixed;
+      top: 0;
+      left: -250px;
+      width: 250px;
+      background-color: #343a40;
+      transition: left 0.3s ease;
+      padding-top: 60px;
+      z-index: 1030;
+    }
+    #sidebarMenu a {
+      color: white;
+      padding: 12px;
+      display: block;
+      text-decoration: none;
+    }
+    #sidebarMenu a:hover { background-color: #495057; }
+    #content {
+      transition: margin-left 0.3s ease;
+      margin-left: 0;
+      padding: 20px;
+    }
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 24px;
+      color: white;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
-<div class="container my-5">
-    <h1 class="mb-4">Repair Dashboard</h1>
 
-    <!-- Repair Cases -->
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Case ID</th>
-                <th>Machine</th>
-                <th>Status</th>
-                <th>Details</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>#12345</td>
-                <td>MC002</td>
-                <td><span class="badge bg-danger">Fault</span></td>
-                <td>Gearbox malfunction</td>
-                <td>
-                    <button class="btn btn-sm btn-success">Mark as Repaired</button>
-                    <button class="btn btn-sm btn-info">Update Notes</button>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+<!-- Menu Button -->
+<button class="btn btn-dark m-3" id="menu-toggle"><i class="bi bi-list"></i> Menu</button>
 
-    <!-- Upload Notes/Images -->
-    <button class="btn btn-secondary">Upload Repair Notes/Images</button>
+<!-- Sidebar -->
+<div id="sidebarMenu">
+  <span class="close-btn" id="close-sidebar">&times;</span>
+  <h5 class="text-white text-center">Menu</h5>
+  <a href="manager_dashboard.html">🏠 Manager Dashboard</a>
+  <a href="view_user.html">👥 View Users</a>
+  <a href="logout.html">🚪 Logout</a>
 </div>
+
+<!-- Main Content -->
+<div id="content" class="container-fluid">
+  <h1 class="mb-4 text-center">View Users</h1>
+
+  <!-- Search Bar -->
+  <div class="mb-3">
+    <input type="text" id="searchInput" class="form-control" placeholder="Search users by name or role...">
+  </div>
+
+  <!-- Success Message -->
+  <div id="message-box" class="alert alert-success d-none" role="alert">
+    ✅ User action completed successfully!
+  </div>
+
+  <!-- Users Table -->
+  <div class="table-responsive">
+    <table class="table table-hover" id="userTable">
+      <thead class="table-dark">
+        <tr>
+          <th>User ID</th>
+          <th>Name</th>
+          <th>Role</th>
+          <th>Actions (Manager Only)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>U001</td>
+          <td>John Doe</td>
+          <td>Technician</td>
+          <td>
+            <button class="btn btn-sm btn-danger"><i class="bi bi-trash"></i> Delete</button>
+          </td>
+        </tr>
+        <tr>
+          <td>U002</td>
+          <td>Jane Smith</td>
+          <td>Repair</td>
+          <td>
+            <button class="btn btn-sm btn-danger"><i class="bi bi-trash"></i> Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Add User Button -->
+  <button class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#addUserModal">
+    <i class="bi bi-person-plus"></i> Add New User
+  </button>
+</div>
+
+<!-- Add User Modal -->
+<div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Add New User</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <input class="form-control mb-3" placeholder="User ID">
+        <input class="form-control mb-3" placeholder="Full Name">
+        <select class="form-select mb-3">
+          <option selected>Select Role</option>
+          <option value="Technician">Technician</option>
+          <option value="Repair">Repair</option>
+          <option value="Manager">Manager</option>
+          <option value="Viewer">Viewer</option>
+        </select>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn btn-primary" data-bs-dismiss="modal" onclick="showMessage()">Add User</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Footer -->
+<!-- Footer Section -->
+<footer class="bg-dark text-white mt-5 pt-4 pb-3 text-center">
+    <div class="container">
+      <p class="mb-1">
+        &copy; 2025 <strong>ACME Manufacturing Corp.</strong> | Factory Machinery Tracking System
+      </p>
+      <div class="mb-2">
+        <a href="#" class="text-white me-3 text-decoration-underline">About</a>
+        <a href="#" class="text-white me-3 text-decoration-underline">Contact</a>
+        <a href="#" class="text-white me-3 text-decoration-underline">Privacy Policy</a>
+        <a href="#" class="text-white text-decoration-underline">Terms of Service</a>
+      </div>
+      <div class="mb-2">
+        Need Help? Visit our <a href="#" class="text-info text-decoration-underline">User Guide</a> or email us at
+        <a href="mailto:acme@gmail.com" class="text-info text-decoration-underline">acme@gmail.com</a>.
+      </div>
+      <div>
+        Follow us on:
+        <a href="#" class="text-primary text-decoration-underline">LinkedIn</a> |
+        <a href="#" class="text-info text-decoration-underline">Twitter</a>
+      </div>
+    </div>
+  </footer>
+  
+<script>
+  // Sidebar toggle
+  document.getElementById('menu-toggle').onclick = () => {
+    document.getElementById('sidebarMenu').style.left = '0';
+    document.getElementById('content').style.marginLeft = '250px';
+  };
+  document.getElementById('close-sidebar').onclick = () => {
+    document.getElementById('sidebarMenu').style.left = '-250px';
+    document.getElementById('content').style.marginLeft = '0';
+  };
+
+  // Show message
+  function showMessage() {
+    const msg = document.getElementById('message-box');
+    msg.classList.remove('d-none');
+    setTimeout(() => msg.classList.add('d-none'), 3000);
+  }
+
+  // Search Filter
+  document.getElementById('searchInput').addEventListener('keyup', function () {
+    let filter = this.value.toLowerCase();
+    let rows = document.querySelectorAll('#userTable tbody tr');
+    rows.forEach(row => {
+      let text = row.innerText.toLowerCase();
+      row.style.display = text.includes(filter) ? '' : 'none';
+    });
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
