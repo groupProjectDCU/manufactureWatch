@@ -8,13 +8,9 @@
 
 {% block content %}
 <div class="container my-5">
-    <h1 class="mb-4">
-        {% if form.instance.pk %}
-            Create Fault Case
-        {% endif %}
-    </h1>
+    <h1 class="mb-4">Create Fault</h1>
 
-    <!-- Form for creating or updating a fault -->
+    <!-- Form for creating a fault -->
     <form method="post">
         {% csrf_token %}
         {% for field in form %}
@@ -31,9 +27,10 @@
         {% endfor %}
 
         <!-- Submit button -->
-        <button type="submit" class="btn btn-primary">
-            {% if form.instance.pk %}Save Changes{% else %}Submit Fault{% endif %}
-        </button>
+        <button type="submit" class="btn btn-primary">Submit Fault</button>
+
+        <!-- Back to Fault Case List button -->
+        <a href="{% url 'repairs:fault_case_list' %}" class="btn btn-secondary">Cancel</a>
     </form>
 </div>
 {% endblock %}

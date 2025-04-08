@@ -8,15 +8,9 @@
 
 {% block content %}
 <div class="container my-5">
-    <h1 class="mb-4">
-        {% if form.instance.pk %}
-            Update Note
-        {% else %}
-            Create a Note
-        {% endif %}
-    </h1>
+    <h1 class="mb-4">Create Note</h1>
 
-    <!-- Form for creating or updating a fault -->
+    <!-- Form for creating a note -->
     <form method="post">
         {% csrf_token %}
         {% for field in form %}
