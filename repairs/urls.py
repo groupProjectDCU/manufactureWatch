@@ -6,11 +6,11 @@ app_name = "repairs"
 """
 All routes for fault case tracking are defined here.
     - User-facing:
-        - GET /repairs/faults/                             → View all fault cases
-        - GET /repairs/faults/<uuid:fault_case_id>/        → View a specific fault case
-        - GET /repairs/faults/create/                      → Create a new fault case (technician only)
-        - GET /repairs/faults/<uuid:fault_case_id>/update/ → Update a fault case
-        - GET /repairs/faults/<uuid:fault_case_id>/fault_note_create/ → Add a note to a specific fault case
+        - GET /repairs/faults/                             -> View all fault cases
+        - GET /repairs/faults/<uuid:fault_case_id>/        -> View a specific fault case
+        - GET /repairs/faults/create/                      -> Create a new fault case (technician only)
+        - GET /repairs/faults/<uuid:fault_case_id>/update/ -> Update a fault case
+        - GET /repairs/faults/<uuid:fault_case_id>/fault_note_create/ -> Add a note to a specific fault case
 """
 urlpatterns = [
     # URL: /repairs/faults/

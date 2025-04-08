@@ -33,9 +33,11 @@
     <!-- A button that will send to /create; TODO: ADD TECHNICIANS  -->
     <div class="container mt-5 pt-4">
         <div class="d-flex justify-content-end">
+            {% block button %} <!-- This block can be overridden in child templates -->
             <a href="{% url 'repairs:fault_case_create' %}" class="btn btn-warning">
                 + Report New Fault
             </a>
+            {% endblock %}
         </div>
     </div>
 
