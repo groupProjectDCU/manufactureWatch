@@ -19,3 +19,12 @@ def register(request):
 
 def forgotpass(request):
     return render(request, 'forgotpass.html')
+
+def privacy(request):
+    return render(request, 'privacy.html')
+
+def terms(request):
+    return render(request, 'terms.html')
+
+def userguide(request):
+    return render(request, 'userguide.html')
