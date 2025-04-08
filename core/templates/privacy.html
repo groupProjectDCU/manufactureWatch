@@ -1,0 +1,141 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy - Factory Machinery Status & Repair Tracking System</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+
+    <!-- External CSS -->
+    <link rel="stylesheet" href="{% static 'styles/styles.css' %}">
+
+    <!-- Inline CSS for Enhanced Styling -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+        }
+        .navbar {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .header-gradient {
+            background: linear-gradient(90deg, #007bff, #00c4cc);
+            padding: 60px 0;
+            border-bottom: 4px solid #fff;
+        }
+        .section-card {
+            background: #fff;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        .section-card:hover {
+            transform: translateY(-5px);
+        }
+        h2 {
+            color: #007bff;
+            font-weight: 600;
+            border-bottom: 2px solid #00c4cc;
+            display: inline-block;
+            padding-bottom: 5px;
+        }
+        h3 {
+            color: #00c4cc;
+            margin-top: 20px;
+        }
+        .footer-gradient {
+            background: linear-gradient(90deg, #343a40, #495057);
+            padding: 20px 0;
+        }
+        .footer a:hover {
+            color posted: #00c4cc !important;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'home' %}">ACME Manufacturing Corp</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'about' %}">About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'contact' %}">Contact</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Login</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <br><br>
+
+    <!-- Privacy Policy Header -->
+    <header class="header-gradient text-white text-center">
+        <div class="container">
+            <h1>Privacy Policy</h1>
+            <p class="lead">Protecting your data at ACME Manufacturing Corp.</p>
+        </div>
+    </header>
+
+    <!-- Privacy Policy Content -->
+    <section class="container my-5">
+        <div class="section-card">
+            <h2 class="text-center mb-4">Our Commitment to Privacy</h2>
+            <p>At ACME Manufacturing Corp., we value the privacy of our employees, technicians, repair personnel, and managers who use the Factory Machinery Status & Repair Tracking System. This Privacy Policy outlines how we collect, use, and protect your personal information.</p>
+
+            <h3>Information We Collect</h3>
+            <ul>
+                <li><strong>User Account Information:</strong> Name, email address, and role assignment.</li>
+                <li><strong>Machine Interaction Data:</strong> Notes, images, and comments submitted for fault cases or warnings.</li>
+                <li><strong>Usage Data:</strong> Login times and pages visited for security and performance monitoring.</li>
+            </ul>
+
+            <h3>How We Use Your Information</h3>
+            <ul>
+                <li>Provide role-based access to the system.</li>
+                <li>Track machinery statuses and repairs.</li>
+                <li>Generate reports and improve user experience.</li>
+            </ul>
+
+            <h3>Data Security</h3>
+            <p>We employ encryption and secure authentication to safeguard your data, accessible only to authorized personnel.</p>
+
+            <h3>Third-Party Sharing</h3>
+            <p>Data is not shared externally except via the anonymized API for machine statuses or as required by law.</p>
+
+            <h3>Your Rights</h3>
+            <p>Contact <a href="mailto:acme@gmail.com" class="text-info">acme@gmail.com</a> to access or delete your data.</p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer-gradient text-white text-center">
+        <p>© 2025 ACME Manufacturing Corp. | Factory Machinery Tracking System</p>
+        <nav>
+            <a href="{% url 'about' %}" class="text-white mx-2">About</a> |
+            <a href="{% url 'contact' %}" class="text-white mx-2">Contact</a> |
+            <a href="{% url 'privacy' %}" class="text-white mx-2">Privacy Policy</a> |
+            <a href="{% url 'terms' %}" class="text-white mx-2">Terms of Service</a>
+        </nav>
+        <p>Need Help? Visit our <a href="{% url 'userguide' %}" class="text-info">User Guide</a> or email us at
+            <a href="mailto:acme@gmail.com" class="text-info">acme@gmail.com</a>.
+        </p>
+        <p>Follow us on:
+            <a href="https://www.linkedin.com" target="_blank" class="text-info">LinkedIn</a> |
+            <a href="https://twitter.com" target="_blank" class="text-info">Twitter</a>
+        </p>
+    </footer>
+
+
+</body>
+</html>

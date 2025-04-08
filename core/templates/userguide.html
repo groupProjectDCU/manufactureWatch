@@ -1,0 +1,176 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Guide - Factory Machinery Status & Repair Tracking System</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+
+    <!-- External CSS -->
+    <link rel="stylesheet" href="{% static 'styles/styles.css' %}">
+
+    <!-- Inline CSS for Enhanced Styling -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+        }
+        .navbar {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .header-gradient {
+            background: linear-gradient(90deg, #007bff, #00c4cc);
+            padding: 60px 0;
+            border-bottom: 4px solid #fff;
+        }
+        .section-card {
+            background: #fff;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        .section-card:hover {
+            transform: translateY(-5px);
+        }
+        h2 {
+            color: #007bff;
+            font-weight: 600;
+            border-bottom: 2px solid #00c4cc;
+            display: inline-block;
+            padding-bottom: 5px;
+        }
+        h3, h4 {
+            color: #00c4cc;
+            margin-top: 20px;
+        }
+        .footer-gradient {
+            background: linear-gradient(90deg, #343a40, #495057);
+            padding: 20px 0;
+        }
+        .footer a:hover {
+            color: #00c4cc !important;
+            text-decoration: underline;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        ul li {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'home' %}">ACME Manufacturing Corp</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'about' %}">About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'contact' %}">Contact</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Login</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <br><br>
+
+    <!-- User Guide Header -->
+    <header class="header-gradient text-white text-center">
+        <div class="container">
+            <h1>User Guide</h1>
+            <p class="lead">Master the Factory Machinery Status & Repair Tracking System</p>
+        </div>
+    </header>
+
+    <!-- User Guide Content -->
+    <section class="container my-5">
+        <div class="section-card">
+            <h2 class="text-center mb-4">Getting Started</h2>
+            <p>This guide helps you navigate the Factory Machinery Status & Repair Tracking System based on your role: Technician, Repair, Manager, or View-only.</p>
+
+            <h3>Logging In</h3>
+            <ul>
+                <li>Go to the <a href="{% url 'login' %}">Login</a> page.</li>
+                <li>Enter your email and password (provided by your Manager).</li>
+                <li>Click "Login" to access your personalized dashboard.</li>
+            </ul>
+
+            <h3>Role-Specific Instructions</h3>
+
+            <h4>Technicians</h4>
+            <ul>
+                <li><strong>View Machines:</strong> Check statuses of your assigned machines on the dashboard.</li>
+                <li><strong>Create Faults:</strong> Set a machine to "Fault," add notes/images, and submit for a case number.</li>
+                <li><strong>Add Warnings:</strong> Use the "Warnings" section to add text alerts.</li>
+                <li><strong>Comment:</strong> Update fault cases with comments.</li>
+            </ul>
+
+            <h4>Repair Personnel</h4>
+            <ul>
+                <li><strong>View Machines:</strong> See your assigned machines’ statuses.</li>
+                <li><strong>Update Faults:</strong> Add notes/images to cases and mark as resolved when fixed.</li>
+                <li><strong>Remove Warnings:</strong> Clear warnings once addressed.</li>
+            </ul>
+
+            <h4>Managers</h4>
+            <ul>
+                <li><strong>Dashboard:</strong> View all machine statuses and drill into collections.</li>
+                <li><strong>User Management:</strong> Add/delete accounts and assign personnel.</li>
+                <li><strong>Reports:</strong> Export data from the "Reports" section.</li>
+                <li><strong>Machine Management:</strong> Add or remove machines in "Manage Machinery."</li>
+            </ul>
+
+            <h4>View-Only Users</h4>
+            <ul>
+                <li><strong>Monitor:</strong> Access read-only views of machine statuses and histories.</li>
+            </ul>
+
+            <h3>Using the API (IT Staff)</h3>
+            <ul>
+                <li><strong>POST /api/warnings:</strong> Submit warnings/faults (test form in "API Test").</li>
+                <li><strong>GET /api/status:</strong> View machine statuses.</li>
+                <li><strong>GET /api/cases:</strong> List open cases.</li>
+                <li><strong>POST /api/cases/{case_id}/comments:</strong> Add case comments.</li>
+            </ul>
+
+            <h3>Troubleshooting</h3>
+            <p>For issues, email <a href="mailto:acme@gmail.com" class="text-info">acme@gmail.com</a>. Ensure JavaScript is enabled and your browser is up to date.</p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer-gradient text-white text-center">
+        <p>© 2025 ACME Manufacturing Corp. | Factory Machinery Tracking System</p>
+        <nav>
+            <a href="{% url 'about' %}" class="text-white mx-2">About</a> |
+            <a href="{% url 'contact' %}" class="text-white mx-2">Contact</a> |
+            <a href="{% url 'privacy' %}" class="text-white mx-2">Privacy Policy</a> |
+            <a href="{% url 'terms' %}" class="text-white mx-2">Terms of Service</a>
+        </nav>
+        <p>Need Help? Visit our <a href="{% url 'userguide' %}" class="text-info">User Guide</a> or email us at
+            <a href="mailto:acme@gmail.com" class="text-info">acme@gmail.com</a>.
+        </p>
+        <p>Follow us on:
+            <a href="https://www.linkedin.com" target="_blank" class="text-info">LinkedIn</a> |
+            <a href="https://twitter.com" target="_blank" class="text-info">Twitter</a>
+        </p>
+    </footer>
+
+  
+
+    <!-- External JavaScript -->
+    <script src="{% static 'Javascript/menu.js' %}"></script>
+
+</body>
+</html>
