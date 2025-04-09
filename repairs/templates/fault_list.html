@@ -13,6 +13,7 @@
                     <th>Priority</th>
                     <th>Created</th>
                     <th>Assigned To</th>
+                    <th>Actions</th> <!-- Added Actions column for update button -->
                     <th></th>
                 </tr>
             </thead>
@@ -30,6 +31,11 @@
                             {{ fault.get_status_display }}
                         </span>
                     </td>
+                    <!-- Add Note Button -->
+                    <td><a href="{% url 'repairs:fault_note_create' fault.case_id %}" class="btn btn-sm btn-primary">Add Note</a></td>
+                    <!-- Add Update button -->
+                    <td><a href="{% url 'repairs:fault_case_update' fault.case_id %}" class="btn btn-sm btn-warning">Update</a></td> 
+                    
                     <td>{{ fault.get_priority_display }}</td>
                     <td>{{ fault.created_at|date:"Y-m-d H:i" }}</td>
                     <td>{{ fault.assigned_to.get_full_name|default:"—" }}</td>

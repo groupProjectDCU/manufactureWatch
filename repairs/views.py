@@ -58,9 +58,9 @@ def fault_case_create(request):
             fault.save() # Save the fault case to the database
 
             # Fetch related notes for the fault case
-            notes = FaultNote.objects.filter(fault_case=fault).order_by('-created_at') # Fetch all notes related to the fault case
+            #notes = FaultNote.objects.filter(fault_case=fault).order_by('-created_at') # Fetch all notes related to the fault case
 
-            return render(request, 'fault_detail.html', {'fault_case': fault, 'notes': notes}) # Render the fault detail directly.
+            return redirect('repairs:fault_case_detail', fault_case_id=fault.case_id) # Render the fault detail directly.
     else:
         form = FaultCaseForm() # Create an empty form for GET requests
 
@@ -73,7 +73,7 @@ def fault_case_update(request, fault_case_id):
     - Handles both GET and POST requests.
     - On GET, displays a form pre-filled with the fault case's current data.
     - On POST, validates the form data and updates the fault case in the database. Redirects to the detail view of the updated fault case.
-    - Passes the form to the 'fault_form.html' template for rendering.
+    - Passes the form to the 'update_fault_form.html' template for rendering.
     """
     fault = get_object_or_404(FaultCase, case_id=fault_case_id) # Get the fault case by ID or return a 404 error if not found.
     if request.method == 'POST':
@@ -81,10 +81,10 @@ def fault_case_update(request, fault_case_id):
         # Validate the form data
         if form.is_valid():
             form.save() # Save the updated fault case to the database
-            return redirect('fault_case_detail', case_id=fault_case_id) # Redirect to the detail view of the updated fault case
+            return redirect('repairs:fault_case_detail', fault_case_id=fault.case_id) # Redirect to the detail view of the updated fault case
     else:
         form = FaultUpdateForm(instance=fault) # Create a form pre-filled with the fault case's current data for GET requests
-    return render(request, 'fault_form.html', {'form': form}) # Render the form template
+    return render(request, 'update_fault_form.html', {'form': form, 'fault_case' : fault}) # Render the update form template
 
 # @login_required
 def fault_note_create(request, fault_case_id):
