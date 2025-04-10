@@ -32,4 +32,8 @@ urlpatterns = [
     path('dashboard/manager/', views.manager_dashboard, name='manager_dashboard'),
     path('dashboard/technician/', views.technician_dashboard, name='technician_dashboard'),
     path('dashboard/repair/', views.repair_dashboard, name='repair_dashboard'),
+
+    # Add from /dashboard
+    path('dashboard/manager/machines/create', views.create_machines, name='create_machines'),
+    path('dashboard/manager/machines<int:machine_id>/edit/', views.update_machines, name='update_machines'),
 ]
