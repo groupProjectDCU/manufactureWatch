@@ -24,7 +24,12 @@
                     <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Home</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'about' %}">About</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'contact' %}">Contact</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Login</a></li>
+                    {% if user.is_authenticated %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'accounts:dashboard' %}">Dashboard</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'accounts:web_logout' %}">Logout</a></li>
+                    {% else %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'accounts:web_login' %}">Login</a></li>
+                    {% endif %}
                 </ul>
             </div>
         </div>
@@ -50,10 +55,10 @@
         <nav>
             <a href="{% url 'about' %}" class="text-white mx-2">About</a> |
             <a href="{% url 'contact' %}" class="text-white mx-2">Contact</a> |
-            <a href="/privacy" class="text-white mx-2">Privacy Policy</a> |
-            <a href="/terms" class="text-white mx-2">Terms of Service</a>
+            <a href="{% url 'privacy' %}" class="text-white mx-2">Privacy Policy</a> |
+            <a href="{% url 'terms' %}" class="text-white mx-2">Terms of Service</a>
         </nav>
-        <p>Need Help? Visit our <a href="/user-guide" class="text-info">User Guide</a> or email us at
+        <p>Need Help? Visit our <a href="{% url 'userguide' %}" class="text-info">User Guide</a> or email us at
             <a href="mailto:acme@gmail.com" class="text-info">acme@gmail.com</a>.
         </p>
         <p>Follow us on:

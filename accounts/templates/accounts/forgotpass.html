@@ -25,7 +25,7 @@
                     <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Home</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'about' %}">About</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'contact' %}">Contact</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Login</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'accounts:web_login' %}">Login</a></li>
                 </ul>
             </div>
         </div>
@@ -38,7 +38,7 @@
             <p class="text-center mb-4">Enter your email address and we will send you a link of new password.</p>
 
             <!-- Forgot Password Form -->
-            <form action="{% url 'forgotpass' %}" method="POST"> <!-- Uses Django URL tag with trailing slash -->
+            <form action="{% url 'accounts:password_reset' %}" method="POST"> <!-- Uses Django URL tag with trailing slash -->
                 {% csrf_token %} <!-- CSRF token is required for Django POST forms -->
 
                 <div class="mb-3">
@@ -50,9 +50,10 @@
                 </div>
             </form>
 
-            <!-- Back to Login Link -->
+            <!-- Extra links -->
             <div class="text-center mt-3">
-                <p>Remember your password? <a href="{% url 'login' %}">Login here</a></p>
+                <p><a href="{% url 'accounts:web_login' %}">Back to Login</a></p>
+                <p>Don't have an account? <a href="{% url 'accounts:web_register' %}">Register here</a></p>
             </div>
         </div>
     </div>

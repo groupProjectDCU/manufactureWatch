@@ -4,3 +4,5 @@ db.sqlite3
 .env
 venv
 .qodo
+project_description.pdf
+.DS_Store

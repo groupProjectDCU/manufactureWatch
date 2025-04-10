@@ -1,0 +1,376 @@
+{% extends 'accounts/dashboard_base.html' %}
+
+{% block title %}View-Only Dashboard - Factory Machinery Status & Repair Tracking{% endblock %}
+
+{% block dashboard_title %}View-Only Dashboard{% endblock %}
+
+{% block dashboard_content %}
+    <div class="alert alert-info mb-4">
+        <h4 class="alert-heading">Welcome to the Factory Machinery Tracking System!</h4>
+        <p>Your account currently has <strong>View-Only</strong> access to the system. This gives you basic monitoring capabilities but no action permissions.</p>
+        <hr>
+        <p class="mb-0">If you need additional permissions, please contact your system administrator using the help section below.</p>
+    </div>
+
+    <!-- Overview Statistics -->
+    <div class="row text-center mb-4">
+        <div class="col-md-3">
+            <div class="card border-success">
+                <div class="card-body">
+                    <h5 class="card-title text-success">Operational</h5>
+                    <p class="display-6">30</p>
+                    <small class="text-muted">Machines working properly</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-warning">
+                <div class="card-body">
+                    <h5 class="card-title text-warning">Warnings</h5>
+                    <p class="display-6">5</p>
+                    <small class="text-muted">Machines requiring attention</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-danger">
+                <div class="card-body">
+                    <h5 class="card-title text-danger">Faults</h5>
+                    <p class="display-6">2</p>
+                    <small class="text-muted">Machines needing repair</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-info">
+                <div class="card-body">
+                    <h5 class="card-title text-info">Total</h5>
+                    <p class="display-6">37</p>
+                    <small class="text-muted">Total machines in system</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- System Health Chart -->
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            System Health Overview
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-8">
+                    <canvas id="systemHealthChart" width="100%" height="50"></canvas>
+                </div>
+                <div class="col-md-4">
+                    <h5>Current System Status</h5>
+                    <div class="progress mb-3" style="height: 25px;">
+                        <div class="progress-bar bg-success" role="progressbar" style="width: 81%;" aria-valuenow="81" aria-valuemin="0" aria-valuemax="100">81% Operational</div>
+                    </div>
+                    <p>Last system update: <span class="fw-bold">2025-04-10 15:30</span></p>
+                    <p>Uptime: <span class="fw-bold">99.8%</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Role Description -->
+    <div class="card mb-4">
+        <div class="card-header bg-secondary text-white">
+            Available System Roles
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <div class="card-header bg-primary text-white">Manager Role</div>
+                        <div class="card-body">
+                            <h6>Responsibilities:</h6>
+                            <ul>
+                                <li>View all machines</li>
+                                <li>Add/delete machines</li>
+                                <li>Assign technicians</li>
+                                <li>Generate reports</li>
+                                <li>Oversee repairs</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <div class="card-header bg-success text-white">Technician Role</div>
+                        <div class="card-body">
+                            <h6>Responsibilities:</h6>
+                            <ul>
+                                <li>Monitor assigned machines</li>
+                                <li>Create/update fault cases</li>
+                                <li>Report warnings</li>
+                                <li>Document machine conditions</li>
+                                <li>Upload maintenance notes</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <div class="card-header bg-danger text-white">Repair Role</div>
+                        <div class="card-body">
+                            <h6>Responsibilities:</h6>
+                            <ul>
+                                <li>View assigned fault cases</li>
+                                <li>Mark faults as resolved</li>
+                                <li>Upload repair notes</li>
+                                <li>Document parts used</li>
+                                <li>Update repair status</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Machinery Read-Only View -->
+    <div class="card mb-4">
+        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+            <span>Machinery Status (Read-Only View)</span>
+            <div>
+                <select class="form-select form-select-sm d-inline-block w-auto">
+                    <option selected>All Statuses</option>
+                    <option>Operational</option>
+                    <option>Warning</option>
+                    <option>Fault</option>
+                </select>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped align-middle">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Machine ID</th>
+                            <th>Name</th>
+                            <th>Location</th>
+                            <th>Status</th>
+                            <th>Priority Level</th>
+                            <th>Last Maintenance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>FM-101</td>
+                            <td>Hydraulic Press</td>
+                            <td>Building 1</td>
+                            <td><span class="badge bg-success">Operational</span></td>
+                            <td><span class="badge bg-info">High</span></td>
+                            <td>2025-03-10</td>
+                        </tr>
+                        <tr>
+                            <td>FM-102</td>
+                            <td>Assembly Line Robot</td>
+                            <td>Building 2</td>
+                            <td><span class="badge bg-warning text-dark">Warning</span></td>
+                            <td><span class="badge bg-warning">Medium</span></td>
+                            <td>2025-02-15</td>
+                        </tr>
+                        <tr>
+                            <td>FM-103</td>
+                            <td>CNC Cutter</td>
+                            <td>Building 1</td>
+                            <td><span class="badge bg-danger">Fault</span></td>
+                            <td><span class="badge bg-danger">Critical</span></td>
+                            <td>2025-01-05</td>
+                        </tr>
+                        <tr>
+                            <td>FM-104</td>
+                            <td>Packaging Machine</td>
+                            <td>Building 3</td>
+                            <td><span class="badge bg-success">Operational</span></td>
+                            <td><span class="badge bg-info">High</span></td>
+                            <td>2025-03-20</td>
+                        </tr>
+                        <tr>
+                            <td>FM-105</td>
+                            <td>Conveyor Belt</td>
+                            <td>Building 2</td>
+                            <td><span class="badge bg-success">Operational</span></td>
+                            <td><span class="badge bg-secondary">Low</span></td>
+                            <td>2025-03-25</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="text-center mt-3">
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                        <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity Log -->
+    <div class="card mb-4">
+        <div class="card-header bg-dark text-white">
+            Recent Activity Log (Read-Only)
+        </div>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+                <span class="text-primary fw-bold">2025-04-10 14:45</span> - 
+                Technician John Doe assigned to FM-104
+            </li>
+            <li class="list-group-item">
+                <span class="text-danger fw-bold">2025-04-10 10:30</span> - 
+                Fault reported on FM-103 by Robert Johnson
+            </li>
+            <li class="list-group-item">
+                <span class="text-warning fw-bold">2025-04-09 16:15</span> - 
+                Warning issued for FM-102 due to overheating
+            </li>
+            <li class="list-group-item">
+                <span class="text-success fw-bold">2025-04-08 09:20</span> - 
+                Machine FM-101 marked operational after repair
+            </li>
+            <li class="list-group-item">
+                <span class="text-primary fw-bold">2025-04-07 11:05</span> - 
+                New machine FM-105 added by Manager
+            </li>
+        </ul>
+    </div>
+
+    <!-- Role Request Form -->
+    <div class="card mb-4">
+        <div class="card-header bg-info text-white">
+            Request Role Upgrade
+        </div>
+        <div class="card-body">
+            <form>
+                <div class="mb-3">
+                    <label class="form-label">Requested Role</label>
+                    <select class="form-select">
+                        <option selected disabled>Select Desired Role</option>
+                        <option>Manager</option>
+                        <option>Technician</option>
+                        <option>Repair</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Justification</label>
+                    <textarea class="form-control" rows="3" placeholder="Please explain why you need this role"></textarea>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Supervisor Name</label>
+                    <input type="text" class="form-control" placeholder="Enter your supervisor's name">
+                </div>
+                <button type="submit" class="btn btn-primary">Submit Request</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Help Section -->
+    <div class="card">
+        <div class="card-header bg-info text-white">
+            Need Help?
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Contact Information</h5>
+                    <ul class="list-unstyled">
+                        <li><strong>System Administrator:</strong> admin@acme-manufacturing.com</li>
+                        <li><strong>Support Helpdesk:</strong> helpdesk@acme-manufacturing.com</li>
+                        <li><strong>Phone Support:</strong> +1-123-456-7890</li>
+                        <li><strong>Office Hours:</strong> Monday-Friday, 8:00 AM - 6:00 PM</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h5>Resources</h5>
+                    <ul>
+                        <li><a href="#" class="link-primary">User Manual</a></li>
+                        <li><a href="#" class="link-primary">FAQ</a></li>
+                        <li><a href="#" class="link-primary">Training Videos</a></li>
+                        <li><a href="#" class="link-primary">System Documentation</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block sidebar_items %}
+<a href="#" class="active">📊 System Overview</a>
+<a href="#">👤 Profile Settings</a>
+<a href="#">🔑 Change Password</a>
+<a href="#">📋 Request Role Change</a>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Create system health chart
+    const ctx = document.getElementById('systemHealthChart').getContext('2d');
+    const systemHealthChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+            datasets: [{
+                label: 'Operational Machines',
+                data: [32, 30, 31, 33, 29, 30],
+                borderColor: 'rgba(40, 167, 69, 1)',
+                backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                borderWidth: 2,
+                tension: 0.3
+            },
+            {
+                label: 'Warning State Machines',
+                data: [3, 4, 3, 2, 5, 5],
+                borderColor: 'rgba(255, 193, 7, 1)',
+                backgroundColor: 'rgba(255, 193, 7, 0.1)',
+                borderWidth: 2,
+                tension: 0.3
+            },
+            {
+                label: 'Faulty Machines',
+                data: [1, 2, 2, 1, 2, 2],
+                borderColor: 'rgba(220, 53, 69, 1)',
+                backgroundColor: 'rgba(220, 53, 69, 0.1)',
+                borderWidth: 2,
+                tension: 0.3
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Machine Status Trend (Last 6 Months)'
+                },
+                legend: {
+                    position: 'bottom'
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Number of Machines'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Month'
+                    }
+                }
+            }
+        }
+    });
+</script>
+{% endblock %} 

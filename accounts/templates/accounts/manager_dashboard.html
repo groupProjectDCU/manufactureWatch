@@ -1,0 +1,203 @@
+{% extends 'accounts/dashboard_base.html' %}
+
+{% block title %}Manager Dashboard - Factory Machinery Status & Repair Tracking{% endblock %}
+
+{% block dashboard_title %}Manager Dashboard{% endblock %}
+
+{% block sidebar_items %}
+<a href="#">📊 Overview</a>
+<a href="#">🔧 All Machinery</a>
+<a href="#">⚠️ Warnings</a>
+<a href="#">❌ Faults</a>
+<a href="#">👥 Staff</a>
+<a href="#">📝 Reports</a>
+{% endblock %}
+
+{% block dashboard_content %}
+    <!-- Status Overview Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card bg-success text-white h-100">
+                <div class="card-body text-center">
+                    <h3 class="card-title">42</h3>
+                    <p class="card-text">Operational</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-dark h-100">
+                <div class="card-body text-center">
+                    <h3 class="card-title">7</h3>
+                    <p class="card-text">Warnings</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-danger text-white h-100">
+                <div class="card-body text-center">
+                    <h3 class="card-title">3</h3>
+                    <p class="card-text">Faults</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-info text-white h-100">
+                <div class="card-body text-center">
+                    <h3 class="card-title">52</h3>
+                    <p class="card-text">Total Machines</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex gap-2">
+                <button class="btn btn-primary"><i class="bi bi-plus-circle"></i> Add Machine</button>
+                <button class="btn btn-success"><i class="bi bi-person-plus"></i> Assign Technician</button>
+                <button class="btn btn-info text-white"><i class="bi bi-file-earmark-arrow-down"></i> Export Report</button>
+                <button class="btn btn-secondary"><i class="bi bi-gear"></i> System Settings</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Machinery Table -->
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <span>Machinery Status</span>
+            <div class="input-group w-50">
+                <input type="text" class="form-control" placeholder="Search machinery...">
+                <button class="btn btn-outline-light" type="button">Search</button>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped align-middle">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Machine ID</th>
+                            <th>Name</th>
+                            <th>Location</th>
+                            <th>Status</th>
+                            <th>Assigned To</th>
+                            <th>Priority</th>
+                            <th>Last Maintenance</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>FM-101</td>
+                            <td>Hydraulic Press</td>
+                            <td>Building 1</td>
+                            <td><span class="badge bg-success">Operational</span></td>
+                            <td>John Smith</td>
+                            <td><span class="badge bg-danger">High</span></td>
+                            <td>2025-04-01</td>
+                            <td>
+                                <div class="btn-group">
+                                    <button class="btn btn-sm btn-info text-white">Edit</button>
+                                    <button class="btn btn-sm btn-warning">History</button>
+                                    <button class="btn btn-sm btn-danger">Deactivate</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>FM-102</td>
+                            <td>Assembly Line Robot</td>
+                            <td>Building 2</td>
+                            <td><span class="badge bg-warning text-dark">Warning</span></td>
+                            <td>Sarah Johnson</td>
+                            <td><span class="badge bg-warning text-dark">Medium</span></td>
+                            <td>2025-03-25</td>
+                            <td>
+                                <div class="btn-group">
+                                    <button class="btn btn-sm btn-info text-white">Edit</button>
+                                    <button class="btn btn-sm btn-warning">History</button>
+                                    <button class="btn btn-sm btn-danger">Deactivate</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>FM-103</td>
+                            <td>CNC Machine</td>
+                            <td>Building 1</td>
+                            <td><span class="badge bg-danger">Fault</span></td>
+                            <td>Mike Davis</td>
+                            <td><span class="badge bg-danger">High</span></td>
+                            <td>2025-03-20</td>
+                            <td>
+                                <div class="btn-group">
+                                    <button class="btn btn-sm btn-info text-white">Edit</button>
+                                    <button class="btn btn-sm btn-warning">History</button>
+                                    <button class="btn btn-sm btn-danger">Deactivate</button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Recent Activity Log -->
+    <div class="card mb-4">
+        <div class="card-header bg-secondary text-white">
+            Recent Activity
+        </div>
+        <div class="card-body">
+            <ul class="list-group">
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="badge bg-success me-2">Update</span>
+                        Machine FM-101 maintenance completed
+                    </div>
+                    <span class="text-muted small">10 minutes ago</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="badge bg-warning text-dark me-2">Warning</span>
+                        Machine FM-102 reported unusual vibration
+                    </div>
+                    <span class="text-muted small">1 hour ago</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="badge bg-danger me-2">Fault</span>
+                        Machine FM-103 reported critical temperature
+                    </div>
+                    <span class="text-muted small">3 hours ago</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="badge bg-info text-white me-2">Assignment</span>
+                        Technician Sarah Johnson assigned to Machine FM-102
+                    </div>
+                    <span class="text-muted small">5 hours ago</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="badge bg-primary me-2">New</span>
+                        Machine FM-104 added to inventory
+                    </div>
+                    <span class="text-muted small">Yesterday</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Additional JavaScript specific to manager dashboard can go here -->
+{% endblock %}
+

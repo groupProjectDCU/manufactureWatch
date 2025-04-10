@@ -1,0 +1,406 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Factory Machinery Tracking System{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body { overflow-x: hidden; }
+        #sidebarMenu {
+            height: 100vh; position: fixed; top: 0; left: -250px;
+            width: 250px; background-color: #343a40; transition: left 0.3s ease;
+            padding-top: 60px; z-index: 1030;
+        }
+        #sidebarMenu a {
+            color: white; padding: 12px; text-decoration: none; display: block;
+        }
+        #sidebarMenu a:hover { background-color: #495057; }
+        #sidebarMenu a.active { background-color: #0d6efd; }
+        #content {
+            transition: margin-left 0.3s ease; padding: 20px; margin-left: 0;
+        }
+        .close-btn {
+            position: absolute; top: 10px; right: 10px;
+            font-size: 24px; color: white; cursor: pointer;
+        }
+        .role-indicator {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
+            font-weight: bold;
+            margin-left: 0.5rem;
+        }
+        .role-manager { background-color: #0d6efd; color: white; }
+        .role-technician { background-color: #198754; color: white; }
+        .role-repair { background-color: #dc3545; color: white; }
+        
+        /* Sidebar section styling */
+        .sidebar-section {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 5px 0;
+            margin: 10px 0;
+        }
+        .sidebar-section h6 {
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            opacity: 0.8;
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    {% block sidebar %}
+    <button class="btn btn-dark m-3" id="menu-toggle">☰ Menu</button>
+    <div id="sidebarMenu">
+        <span class="close-btn" id="close-sidebar">&times;</span>
+        <h5 class="text-white text-center">Menu</h5>
+        <!-- Common links for all users -->
+        <a href="{% url 'home' %}">🏠 Home</a>
+        
+        <!-- Role-specific navigation -->
+        {% if user.is_authenticated %}
+            <!-- User account management - simplified to a single link -->
+            <a href="#" id="user-profile-link">👤 My Profile</a>
+            <!-- Role-specific section -->
+            <div class="sidebar-section mt-3 mb-2">
+                <h6 class="text-light ms-2 small fw-bold">ROLE ACTIONS</h6>
+            </div>
+            {% if user.role == 'MANAGER' %}
+                <a href="{% url 'accounts:manager_dashboard' %}" {% if request.resolver_match.url_name == 'manager_dashboard' %}class="active"{% endif %}>📊 Manager Dashboard</a>
+                <a href="#">👨‍💼 Manage Staff</a>
+                <a href="#">🔧 Add Machinery</a>
+                <a href="#">📈 Reports</a>
+            {% elif user.role == 'TECHNICIAN' %}
+                <a href="{% url 'accounts:technician_dashboard' %}" {% if request.resolver_match.url_name == 'technician_dashboard' %}class="active"{% endif %}>🔍 Technician Dashboard</a>
+                <a href="#">⚠️ Report Warning</a>
+                <a href="#">🛑 Report Fault</a>
+            {% elif user.role == 'REPAIR' %}
+                <a href="{% url 'accounts:repair_dashboard' %}" {% if request.resolver_match.url_name == 'repair_dashboard' %}class="active"{% endif %}>🔧 Repair Dashboard</a>
+                <a href="#">📋 Repair History</a>
+                <a href="#">📝 Parts Inventory</a>
+            {% else %}
+                <a href="{% url 'accounts:dashboard' %}" {% if request.resolver_match.url_name == 'dashboard' %}class="active"{% endif %}>📊 View Dashboard</a>
+                <a href="#">📋 Request Role Upgrade</a>
+            {% endif %}
+
+        {% endif %}
+        
+        <!-- Custom sidebar items divider -->
+        <div class="sidebar-section mt-3 mb-2">
+            <h6 class="text-light ms-2 small fw-bold">CUSTOM ACTIONS</h6>
+        </div>
+        
+        <!-- Custom sidebar items specific to each dashboard -->
+        {% block sidebar_items %}{% endblock %}
+        
+        <!-- Logout for all users -->
+        <a href="{% url 'accounts:web_logout' %}">🚪 Logout</a>
+    </div>
+    {% endblock %}
+
+    <div class="container-fluid py-4">
+        <h2 class="mb-4 text-center">
+            {% block dashboard_title %}Dashboard{% endblock %}
+            {% if user.is_authenticated %}
+                {% if user.role == 'MANAGER' %}
+                    <span class="role-indicator role-manager">Manager</span>
+                {% elif user.role == 'TECHNICIAN' %}
+                    <span class="role-indicator role-technician">Technician</span>
+                {% elif user.role == 'REPAIR' %}
+                    <span class="role-indicator role-repair">Repair</span>
+                {% endif %}
+            {% endif %}
+        </h2>
+
+        <!-- Messages -->
+        {% if messages %}
+        <div class="messages" id="message-container">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show js-auto-dismiss" 
+                 role="alert"
+                 data-message-type="{{ message.tags }}"
+                 data-auto-dismiss="true">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endfor %}
+        </div>
+        <script>
+            // Immediate inline script to dismiss alerts
+            setTimeout(function() {
+                document.querySelectorAll('.js-auto-dismiss').forEach(function(alert) {
+                    alert.style.transition = 'opacity 0.5s ease';
+                    alert.style.opacity = '0';
+                    setTimeout(function() {
+                        if (alert.parentNode) alert.parentNode.removeChild(alert);
+                    }, 500);
+                });
+            }, 4000);
+        </script>
+        {% endif %}
+        
+        {% block dashboard_content %}
+        <!-- Dashboard content will be inserted here -->
+        {% endblock %}
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-3">
+        <div class="container text-center">
+            <span>&copy; 2025 ACME Manufacturing Corp. | Factory Machinery Status & Repair Tracking System</span><br>
+            <small>Developed by Web Application Development Team | Dublin City University</small>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'js/alerts.js' %}"></script>
+    <script>
+        const toggleButton = document.getElementById('menu-toggle');
+        const sidebarMenu = document.getElementById('sidebarMenu');
+        const content = document.getElementById('content');
+        const closeBtn = document.getElementById('close-sidebar');
+
+        toggleButton.addEventListener('click', function () {
+            sidebarMenu.style.left = '0px';
+            content.style.marginLeft = '250px';
+        });
+
+        closeBtn.addEventListener('click', function () {
+            sidebarMenu.style.left = '-250px';
+            content.style.marginLeft = '0';
+        });
+    </script>
+    {% block extra_js %}{% endblock %}
+    
+    <!-- User Profile Modal -->
+    <div class="modal fade" id="userProfileModal" tabindex="-1" aria-labelledby="userProfileModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="userProfileModalLabel">My Profile</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="profile-alert-container"></div>
+                    <div id="profile-form-container"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="saveProfileBtn">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Initialize user profile modal
+        document.getElementById('user-profile-link').addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Show loading spinner in modal
+            const profileModal = new bootstrap.Modal(document.getElementById('userProfileModal'));
+            document.getElementById('profile-form-container').innerHTML = `
+                <div class="d-flex justify-content-center my-5">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            `;
+            profileModal.show();
+            
+            // Fetch fresh user data from server
+            fetch('/accounts/get-profile/', {
+                method: 'GET',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                credentials: 'same-origin'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log('Profile data fetched:', data);
+                    // Update form with latest user data
+                    document.getElementById('profile-form-container').innerHTML = `
+                        <form id="userProfileForm">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label for="username" class="form-label">Username</label>
+                                <input type="text" class="form-control" id="username" value="${data.user.username}" readonly>
+                                <div class="form-text">Username cannot be changed</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="first_name" class="form-label">First Name</label>
+                                <input type="text" class="form-control" id="first_name" name="first_name" value="${data.user.first_name}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="last_name" class="form-label">Last Name</label>
+                                <input type="text" class="form-control" id="last_name" name="last_name" value="${data.user.last_name}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="email" name="email" value="${data.user.email}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="phone" class="form-label">Phone Number</label>
+                                <input type="tel" class="form-control" id="phone" name="phone_number" value="${data.user.phone_number !== null && data.user.phone_number !== undefined ? data.user.phone_number : ''}">
+                                <div class="form-text">Format: +1-123-456-7890</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="current_password" class="form-label">Current Password</label>
+                                <input type="password" class="form-control" id="current_password" name="current_password" placeholder="Enter current password to save changes">
+                                <div class="form-text">Required to confirm profile changes</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="role" class="form-label">Current Role</label>
+                                <input type="text" class="form-control bg-light" id="role" value="${data.user.role_display}" readonly style="cursor: not-allowed; opacity: 0.8;">
+                                <div class="form-text">Role changes require administrator approval</div>
+                            </div>
+                            <!-- Hidden submit button to enable Enter key submission -->
+                            <button type="submit" id="hidden-submit" style="display: none;"></button>
+                        </form>
+                    `;
+                    
+                    // Add event listener for form submission via Enter key
+                    document.getElementById('userProfileForm').addEventListener('submit', function(e) {
+                        e.preventDefault(); // Prevent actual form submission
+                        document.getElementById('saveProfileBtn').click(); // Trigger the save button click
+                    });
+                    
+                    // Set focus on first editable input after form loads
+                    setTimeout(() => {
+                        const firstNameInput = document.getElementById('first_name');
+                        if (firstNameInput) {
+                            firstNameInput.focus();
+                        }
+                    }, 100);
+                } else {
+                    // Show error message if data fetch fails
+                    document.getElementById('profile-form-container').innerHTML = `
+                        <div class="alert alert-danger" role="alert">
+                            Error loading profile data. Please try again later.
+                        </div>
+                    `;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('profile-form-container').innerHTML = `
+                    <div class="alert alert-danger" role="alert">
+                        Error connecting to server. Please check your connection and try again.
+                    </div>
+                `;
+            });
+        });
+        
+        // Handle profile form submission with AJAX
+        document.addEventListener('click', function(e) {
+            if (e.target && e.target.id === 'saveProfileBtn') {
+                const form = document.getElementById('userProfileForm');
+                if (!form) return; // Exit if form isn't loaded yet
+                
+                const formData = new FormData(form);
+                const alertContainer = document.getElementById('profile-alert-container');
+                
+                // Clear previous alerts
+                alertContainer.innerHTML = '';
+                
+                // Send AJAX request
+                fetch('/accounts/update-profile/', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    credentials: 'same-origin'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        console.log('Profile update response:', data);
+                        // Success message
+                        alertContainer.innerHTML = `
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                ${data.message}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        `;
+                        
+                        // Clear password field
+                        document.getElementById('current_password').value = '';
+                        
+                        // Update user form data with latest values
+                        if (data.user) {
+                            if (document.getElementById('first_name')) {
+                                document.getElementById('first_name').value = data.user.first_name || '';
+                            }
+                            if (document.getElementById('last_name')) {
+                                document.getElementById('last_name').value = data.user.last_name || '';
+                            }
+                            if (document.getElementById('email')) {
+                                document.getElementById('email').value = data.user.email || '';
+                            }
+                            if (document.getElementById('phone')) {
+                                document.getElementById('phone').value = data.user.phone_number || '';
+                            }
+                        }
+                        
+                        // Show success message briefly then close modal
+                        setTimeout(() => {
+                            // Get the modal instance and close it
+                            const profileModal = bootstrap.Modal.getInstance(document.getElementById('userProfileModal'));
+                            profileModal.hide();
+                            
+                            // Show success toast notification after modal closes
+                            const successToast = document.createElement('div');
+                            successToast.className = 'position-fixed bottom-0 end-0 p-3';
+                            successToast.style.zIndex = '5';
+                            successToast.innerHTML = `
+                                <div class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                                    <div class="d-flex">
+                                        <div class="toast-body">
+                                            <i class="bi bi-check-circle-fill me-2"></i> Profile updated successfully!
+                                        </div>
+                                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                                    </div>
+                                </div>
+                            `;
+                            document.body.appendChild(successToast);
+                            const toast = new bootstrap.Toast(successToast.querySelector('.toast'));
+                            toast.show();
+                            
+                            // Remove toast after it's hidden
+                            successToast.querySelector('.toast').addEventListener('hidden.bs.toast', () => {
+                                document.body.removeChild(successToast);
+                            });
+                        }, 1000); // Show success message for 1 second before closing
+                    } else {
+                        // Error message
+                        alertContainer.innerHTML = `
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                ${data.message}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        `;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alertContainer.innerHTML = `
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            An error occurred while saving your profile. Please try again.
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    `;
+                });
+            }
+        });
+    </script>
+</body>
+</html> 
