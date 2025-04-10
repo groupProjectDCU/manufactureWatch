@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Terms of Service - Factory Machinery Status & Repair Tracking System</title>
+    <title>{% block title %}Factory Machinery Status & Repair Tracking{% endblock %}</title>
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
@@ -12,7 +12,7 @@
     <!-- External CSS -->
     <link rel="stylesheet" href="{% static 'styles/styles.css' %}">
 
-    <!-- Inline CSS for Enhanced Styling -->
+    <!-- Common Inline CSS -->
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -27,27 +27,6 @@
             padding: 60px 0;
             border-bottom: 4px solid #fff;
         }
-        .section-card {
-            background: #fff;
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease;
-        }
-        .section-card:hover {
-            transform: translateY(-5px);
-        }
-        h2 {
-            color: #007bff;
-            font-weight: 600;
-            border-bottom: 2px solid #00c4cc;
-            display: inline-block;
-            padding-bottom: 5px;
-        }
-        h3 {
-            color: #00c4cc;
-            margin-top: 20px;
-        }
         .footer-gradient {
             background: linear-gradient(90deg, #343a40, #495057);
             padding: 20px 0;
@@ -57,9 +36,11 @@
             text-decoration: underline;
         }
     </style>
+
+    <!-- Page-specific CSS -->
+    {% block extra_css %}{% endblock %}
 </head>
 <body>
-
     <!-- Navigation Bar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
         <div class="container">
@@ -72,50 +53,33 @@
                     <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Home</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'about' %}">About</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'contact' %}">Contact</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Login</a></li>
+                    {% if user.is_authenticated %}
+                        {% if user.role == 'MANAGER' %}
+                            <li class="nav-item"><a class="nav-link" href="{% url 'accounts:manager_dashboard' %}">Manager Dashboard</a></li>
+                        {% elif user.role == 'TECHNICIAN' %}
+                            <li class="nav-item"><a class="nav-link" href="{% url 'accounts:technician_dashboard' %}">Technician Dashboard</a></li>
+                        {% elif user.role == 'REPAIR' %}
+                            <li class="nav-item"><a class="nav-link" href="{% url 'accounts:repair_dashboard' %}">Repair Dashboard</a></li>
+                        {% else %}
+                            <li class="nav-item"><a class="nav-link" href="{% url 'accounts:dashboard' %}">Dashboard</a></li>
+                        {% endif %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'accounts:web_logout' %}">Logout</a></li>
+                    {% else %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'accounts:web_login' %}">Login</a></li>
+                    {% endif %}
                 </ul>
             </div>
         </div>
     </nav>
-    <br><br>
+    
+    <!-- Spacing to account for fixed navbar -->
+    <div class="pt-5 mt-3"></div>
 
-    <!-- Terms of Service Header -->
-    <header class="header-gradient text-white text-center">
-        <div class="container">
-            <h1>Terms of Service</h1>
-            <p class="lead">Rules and guidelines for using our system</p>
-        </div>
-    </header>
-
-    <!-- Terms of Service Content -->
-    <section class="container my-5">
-        <div class="section-card">
-            <h2 class="text-center mb-4">Agreement to Terms</h2>
-            <p>By using the Factory Machinery Status & Repair Tracking System, you agree to these Terms of Service, designed for internal use by ACME Manufacturing Corp. personnel.</p>
-
-            <h3>User Responsibilities</h3>
-            <ul>
-                <li><strong>Account Security:</strong> Keep your login credentials confidential.</li>
-                <li><strong>Data Accuracy:</strong> Submit accurate and relevant information.</li>
-                <li><strong>Role Compliance:</strong> Operate within your assigned role’s permissions.</li>
-            </ul>
-
-            <h3>Acceptable Use</h3>
-            <p>Use the system solely for machinery tracking and repairs. Misuse, including unauthorized access or API abuse, is prohibited.</p>
-
-            <h3>System Availability</h3>
-            <p>We aim for continuous operation but are not liable for downtime due to maintenance or technical issues.</p>
-
-            <h3>Termination</h3>
-            <p>Managers may terminate accounts for violations or at their discretion, revoking your access.</p>
-
-            <h3>Changes to Terms</h3>
-            <p>Terms may be updated, with notifications sent via email or system alerts.</p>
-        </div>
-    </section>
+    <!-- Main Content -->
+    {% block content %}{% endblock %}
 
     <!-- Footer -->
-    <footer class="footer-gradient text-white text-center">
+    <footer class="footer-gradient text-white text-center py-3">
         <p>© 2025 ACME Manufacturing Corp. | Factory Machinery Tracking System</p>
         <nav>
             <a href="{% url 'about' %}" class="text-white mx-2">About</a> |
@@ -132,9 +96,13 @@
         </p>
     </footer>
 
-
-    <!-- External JavaScript -->
-    <script src="{% static 'Javascript/menu.js' %}"></script>
-
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Page-specific JavaScript -->
+    {% block extra_js %}{% endblock %}
+    
+    <!-- Auto-dismiss alerts -->
+    <script src="{% static 'js/alerts.js' %}"></script>
 </body>
-</html>
+</html> 

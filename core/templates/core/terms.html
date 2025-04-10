@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Terms of Service - Factory Machinery Status & Repair Tracking System{% endblock %}
+
+{% block extra_css %}
+<style>
+    .section-card {
+        background: #fff;
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+    }
+    .section-card:hover {
+        transform: translateY(-5px);
+    }
+    h2 {
+        color: #007bff;
+        font-weight: 600;
+        border-bottom: 2px solid #00c4cc;
+        display: inline-block;
+        padding-bottom: 5px;
+    }
+    h3 {
+        color: #00c4cc;
+        margin-top: 20px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+    <!-- Terms of Service Header -->
+    <header class="header-gradient text-white text-center">
+        <div class="container">
+            <h1>Terms of Service</h1>
+            <p class="lead">Rules and guidelines for using our system</p>
+        </div>
+    </header>
+
+    <!-- Terms of Service Content -->
+    <section class="container my-5">
+        <div class="section-card">
+            <h2 class="text-center mb-4">Agreement to Terms</h2>
+            <p>By using the Factory Machinery Status & Repair Tracking System, you agree to these Terms of Service, designed for internal use by ACME Manufacturing Corp. personnel.</p>
+
+            <h3>User Responsibilities</h3>
+            <ul>
+                <li><strong>Account Security:</strong> Keep your login credentials confidential.</li>
+                <li><strong>Data Accuracy:</strong> Submit accurate and relevant information.</li>
+                <li><strong>Role Compliance:</strong> Operate within your assigned role's permissions.</li>
+            </ul>
+
+            <h3>Acceptable Use</h3>
+            <p>Use the system solely for machinery tracking and repairs. Misuse, including unauthorized access or API abuse, is prohibited.</p>
+
+            <h3>System Availability</h3>
+            <p>We aim for continuous operation but are not liable for downtime due to maintenance or technical issues.</p>
+
+            <h3>Termination</h3>
+            <p>Managers may terminate accounts for violations or at their discretion, revoking your access.</p>
+
+            <h3>Changes to Terms</h3>
+            <p>Terms may be updated, with notifications sent via email or system alerts.</p>
+        </div>
+    </section>
+{% endblock %}

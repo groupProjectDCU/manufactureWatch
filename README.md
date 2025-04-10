@@ -84,7 +84,7 @@ Run the custom management command:
 ```bash
 docker compose run web python manage.py load_test_data
 ```
-This will load test users with different roles (managers, technicians, repair staff), sample machinery, collections, warnings, and fault cases with notes.
+This will load test users with different roles (managers, technicians, repair staff), sample machinery, collections, warnings, and fault cases with notes. It will also automatically reset all test user passwords to match the documentation.
 
 The test data includes:
 - 9 users with different roles
@@ -94,7 +94,9 @@ The test data includes:
 - 2 fault cases (1 open, 1 resolved)
 - 4 fault notes
 
-**Note:** All test users have the password "password123" for easy testing. Visit http://localhost:8000/admin to see the test data.
+**Note:** All test users will have the password "password123" after loading the test data. This is handled automatically by the `load_test_data` command.
+
+Visit http://localhost:8000/admin to see the test data.
 
 ### 4. **Persistent Storage**:
 The docker-compose.yml defines a volume for PostgreSQL data (pgdata:/var/lib/postgresql/data) to persist your database across container restarts.

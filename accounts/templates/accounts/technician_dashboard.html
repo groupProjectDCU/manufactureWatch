@@ -1,0 +1,107 @@
+{% extends 'accounts/dashboard_base.html' %}
+
+{% block title %}Technician Dashboard - Factory Machinery Status & Repair Tracking{% endblock %}
+
+{% block dashboard_title %}Technician Dashboard{% endblock %}
+
+{% block sidebar_items %}
+<a href="#">🔍 My Machines</a>
+<a href="#">⚠️ Report Warning</a>
+<a href="#">❌ Report Fault</a>
+<a href="#">📝 Maintenance Log</a>
+{% endblock %}
+
+{% block dashboard_content %}
+    <p>You are responsible for monitoring machinery, maintaining records, and coordination with repair personnel.</p>
+
+    <!-- Assigned Machines Table -->
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            My Assigned Machines
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped align-middle">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Machine ID</th>
+                            <th>Name</th>
+                            <th>Location</th>
+                            <th>Status</th>
+                            <th>Last Check</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>FM-101</td>
+                            <td>Hydraulic Press</td>
+                            <td>Building 1</td>
+                            <td><span class="badge bg-success">Operational</span></td>
+                            <td>2025-04-01</td>
+                            <td>
+                                <button class="btn btn-sm btn-warning">Add Warning</button>
+                                <button class="btn btn-sm btn-danger">Report Fault</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>FM-102</td>
+                            <td>Assembly Line Robot</td>
+                            <td>Building 2</td>
+                            <td><span class="badge bg-warning text-dark">Warning</span></td>
+                            <td>2025-04-05</td>
+                            <td>
+                                <button class="btn btn-sm btn-warning">Add Warning</button>
+                                <button class="btn btn-sm btn-danger">Report Fault</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>FM-104</td>
+                            <td>Packaging Machine</td>
+                            <td>Building 3</td>
+                            <td><span class="badge bg-success">Operational</span></td>
+                            <td>2025-04-07</td>
+                            <td>
+                                <button class="btn btn-sm btn-warning">Add Warning</button>
+                                <button class="btn btn-sm btn-danger">Report Fault</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upload Notes/Images -->
+    <div class="card mb-4">
+        <div class="card-header bg-info text-white">
+            Upload Notes/Images
+        </div>
+        <div class="card-body">
+            <form>
+                <div class="mb-3">
+                    <label class="form-label">Machine ID</label>
+                    <select class="form-select">
+                        <option>Select Machine</option>
+                        <option>FM-101</option>
+                        <option>FM-102</option>
+                        <option>FM-104</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Notes</label>
+                    <textarea class="form-control" rows="3" placeholder="Enter your maintenance notes"></textarea>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Upload Images</label>
+                    <input class="form-control" type="file" multiple>
+                </div>
+                <button class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Additional JavaScript specific to technician dashboard can go here -->
+{% endblock %}

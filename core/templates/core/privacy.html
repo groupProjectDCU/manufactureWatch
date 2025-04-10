@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Privacy Policy - Factory Machinery Status & Repair Tracking{% endblock %}
+
+{% block extra_css %}
+<style>
+    .section-card {
+        background: #fff;
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+    }
+    .section-card:hover {
+        transform: translateY(-5px);
+    }
+    h2 {
+        color: #007bff;
+        font-weight: 600;
+        border-bottom: 2px solid #00c4cc;
+        display: inline-block;
+        padding-bottom: 5px;
+    }
+    h3 {
+        color: #00c4cc;
+        margin-top: 20px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+    <!-- Privacy Policy Header -->
+    <header class="header-gradient text-white text-center">
+        <div class="container">
+            <h1>Privacy Policy</h1>
+            <p class="lead">Protecting your data at ACME Manufacturing Corp.</p>
+        </div>
+    </header>
+
+    <!-- Privacy Policy Content -->
+    <section class="container my-5">
+        <div class="section-card">
+            <h2 class="text-center mb-4">Our Commitment to Privacy</h2>
+            <p>At ACME Manufacturing Corp., we value the privacy of our employees, technicians, repair personnel, and managers who use the Factory Machinery Status & Repair Tracking System. This Privacy Policy outlines how we collect, use, and protect your personal information.</p>
+
+            <h3>Information We Collect</h3>
+            <ul>
+                <li><strong>User Account Information:</strong> Name, email address, and role assignment.</li>
+                <li><strong>Machine Interaction Data:</strong> Notes, images, and comments submitted for fault cases or warnings.</li>
+                <li><strong>Usage Data:</strong> Login times and pages visited for security and performance monitoring.</li>
+            </ul>
+
+            <h3>How We Use Your Information</h3>
+            <ul>
+                <li>Provide role-based access to the system.</li>
+                <li>Track machinery statuses and repairs.</li>
+                <li>Generate reports and improve user experience.</li>
+            </ul>
+
+            <h3>Data Security</h3>
+            <p>We employ encryption and secure authentication to safeguard your data, accessible only to authorized personnel.</p>
+
+            <h3>Third-Party Sharing</h3>
+            <p>Data is not shared externally except via the anonymized API for machine statuses or as required by law.</p>
+
+            <h3>Your Rights</h3>
+            <p>Contact <a href="mailto:acme@gmail.com" class="text-info">acme@gmail.com</a> to access or delete your data.</p>
+        </div>
+    </section>
+{% endblock %}

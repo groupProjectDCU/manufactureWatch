@@ -11,8 +11,7 @@ class User(AbstractUser):
     ]
     
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='VIEW_ONLY')
+    phone_number = models.CharField(max_length=20, blank=True, null=True)
     
     def __str__(self):
-
-# Create your models here.
         return f"{self.first_name} {self.last_name} ({self.role})"
