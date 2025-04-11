@@ -13,18 +13,10 @@ All routes for fault case tracking are defined here.
         - GET /repairs/faults/<uuid:fault_case_id>/fault_note_create/ -> Add a note to a specific fault case
 """
 urlpatterns = [
-    # URL: /repairs/faults/
+    # User-facing URLs
     path('faults/', views.fault_case_list, name='fault_case_list'),
-
-    # URL: /repairs/faults/<uuid:fault_case_id>/
     path('faults/<uuid:fault_case_id>/', views.fault_case_detail, name='fault_case_detail'),
-
-    # URL: /repairs/faults/create/
     path('faults/create/', views.fault_case_create, name='fault_case_create'),
-
-    # URL: /repairs/faults/<uuid:fault_case_id>/update/
     path('faults/<uuid:fault_case_id>/update/', views.fault_case_update, name='fault_case_update'),
-
-    # URL: /repairs/faults/<uuid:fault_case_id>/fault_note_create/
     path('faults/<uuid:fault_case_id>/fault_note_create/', views.fault_note_create, name='fault_note_create'),
 ]

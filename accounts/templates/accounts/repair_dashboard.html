@@ -1,8 +1,12 @@
 {% extends 'accounts/dashboard_base.html' %}
+{% load static %}
 
 {% block title %}Repair Dashboard - Factory Machinery Status & Repair Tracking{% endblock %}
 
-{% block dashboard_title %}Repair Team Dashboard{% endblock %}
+{% block dashboard_title %}
+    Repair Team Dashboard
+    <button class="btn btn-danger btn-sm ms-2">Repair</button>
+{% endblock %}
 
 {% block sidebar_items %}
 <a href="#">🔧 Current Repairs</a>
@@ -16,26 +20,26 @@
     <!-- Repair Status Overview Cards -->
     <div class="row text-center mb-4">
         <div class="col-md-4">
-            <div class="card border-danger">
+            <div class="card border-danger status-card" data-status="pending" role="button">
                 <div class="card-body">
                     <h5 class="card-title text-danger">Pending Repairs</h5>
-                    <p class="display-6">3 Machines</p>
+                    <p class="display-6"><span id="pending-count">0</span> Machines</p>
                 </div>
             </div>
         </div>
         <div class="col-md-4">
-            <div class="card border-warning">
+            <div class="card border-warning status-card" data-status="in_progress" role="button">
                 <div class="card-body">
                     <h5 class="card-title text-warning">In Progress</h5>
-                    <p class="display-6">2 Machines</p>
+                    <p class="display-6"><span id="in-progress-count">0</span> Machines</p>
                 </div>
             </div>
         </div>
         <div class="col-md-4">
-            <div class="card border-success">
+            <div class="card border-success status-card" data-status="completed" role="button">
                 <div class="card-body">
                     <h5 class="card-title text-success">Completed</h5>
-                    <p class="display-6">15 Machines</p>
+                    <p class="display-6"><span id="completed-count">0</span> Machines</p>
                 </div>
             </div>
         </div>
@@ -43,7 +47,7 @@
 
     <!-- Repairs Table -->
     <div class="table-responsive mb-4">
-        <table class="table table-striped align-middle">
+        <table class="table table-striped align-middle" id="repairs-table">
             <thead class="table-dark">
                 <tr>
                     <th>Repair ID</th>
@@ -56,66 +60,63 @@
                     <th>Actions</th>
                 </tr>
             </thead>
-            <tbody>
-                <tr>
-                    <td>#12345</td>
-                    <td>FM-103</td>
-                    <td>CNC Cutter</td>
-                    <td><span class="badge bg-danger">Fault</span></td>
-                    <td>Gearbox malfunction</td>
-                    <td>Robert Johnson</td>
-                    <td>2025-04-01</td>
-                    <td>
-                        <button class="btn btn-sm btn-success">Mark as Repaired</button>
-                        <button class="btn btn-sm btn-info">Update Notes</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>#12346</td>
-                    <td>FM-202</td>
-                    <td>Conveyor Belt</td>
-                    <td><span class="badge bg-warning text-dark">Warning</span></td>
-                    <td>Belt tension issue</td>
-                    <td>Anna Smith</td>
-                    <td>2025-03-28</td>
-                    <td>
-                        <button class="btn btn-sm btn-success">Mark as Repaired</button>
-                        <button class="btn btn-sm btn-info">Update Notes</button>
-                    </td>
-                </tr>
+            <tbody id="repairs-tbody">
+                <!-- Table content will be loaded dynamically -->
             </tbody>
         </table>
     </div>
 
-    <!-- Upload Repair Details -->
-    <div class="card mb-4">
-        <div class="card-header bg-info text-white">
-            Upload Repair Details
-        </div>
-        <div class="card-body">
-            <form>
-                <div class="mb-3">
-                    <label class="form-label">Repair ID</label>
-                    <input type="text" class="form-control" placeholder="Enter Repair ID">
+    <!-- Repair Details Modal -->
+    <div class="modal fade" id="repairDetailsModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Repair Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="mb-3">
-                    <label class="form-label">Parts Used</label>
-                    <textarea class="form-control" rows="2" placeholder="List parts used"></textarea>
+                <div class="modal-body">
+                    <form id="repairDetailsForm">
+                        {% csrf_token %}
+                        <input type="hidden" id="repairId" name="repairId">
+                        <div class="mb-3">
+                            <label class="form-label">Parts Used</label>
+                            <textarea class="form-control" id="partsUsed" name="partsUsed" rows="2" placeholder="List parts used"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Repair Notes</label>
+                            <textarea class="form-control" id="repairNotes" name="repairNotes" rows="3" placeholder="Describe repair process and outcomes"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Upload Images</label>
+                            <input class="form-control" type="file" id="repairImages" name="repairImages" multiple>
+                        </div>
+                    </form>
                 </div>
-                <div class="mb-3">
-                    <label class="form-label">Repair Notes</label>
-                    <textarea class="form-control" rows="3" placeholder="Describe repair process and outcomes"></textarea>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="saveRepairDetails">Save Changes</button>
                 </div>
-                <div class="mb-3">
-                    <label class="form-label">Upload Images</label>
-                    <input class="form-control" type="file" multiple>
-                </div>
-                <button class="btn btn-primary">Submit</button>
-            </form>
+            </div>
         </div>
     </div>
 {% endblock %}
 
+{% block extra_css %}
+<style>
+    .status-card {
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .status-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .status-card.border-4 {
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+</style>
+{% endblock %}
+
 {% block extra_js %}
-<!-- Any additional javascript specific to the repair dashboard -->
+<script src="{% static 'javascript/repair_dashboard.js' %}"></script>
 {% endblock %}
