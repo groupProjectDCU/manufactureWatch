@@ -1,9 +1,12 @@
+import csv
+from collections import defaultdict
+
 from django.contrib.auth import authenticate, login, logout
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 
-from machinery.models import Machinery, MachineryAssignment
+from machinery.models import Machinery, MachineryAssignment, Collection, MachineryCollection
 from .serializers import UserSerializer
 from .models import User
 import json
@@ -302,7 +305,8 @@ def manager_dashboard(request):
         messages.error(request, "You don't have permission to access the manager dashboard.")
         return redirect('accounts:dashboard')
 
-    machines = Machinery.objects.all()
+    machines = Machinery.objects.all().prefetch_related('machinerycollection_set__collection')
+    machine_collections = defaultdict(list)
     assignments = {}
 
     # Count machine statuses
@@ -319,9 +323,14 @@ def manager_dashboard(request):
         )
         assignments[machine.machine_id] = assignment
 
+        # Get all collection names for this machine
+        for mc in machine.machinerycollection_set.all():
+            machine_collections[machine.machine_id].append(mc.collection.name)
+
     return render(request, 'accounts/manager_dashboard.html', {
         'machines': machines,
         'assignments': assignments,
+        'machine_collections': dict(machine_collections),
         'ok_count': ok_count,
         'warning_count': warning_count,
         'fault_count': fault_count,
@@ -377,8 +386,6 @@ def get_profile(request):
 
 # Only managers are able to add machines
 # accounts/dashboard/manager/machines/create
-
-# TODO: add collection as well
 @login_required(login_url='accounts:web_login')
 def create_machines(request):
     # Check if user has manager role
@@ -387,6 +394,7 @@ def create_machines(request):
         return redirect('accounts:dashboard')
 
     technicians = User.objects.filter(role='TECHNICIAN')
+    collections = Collection.objects.all()
 
     if request.method == 'POST':
         name = request.POST.get('name', '').strip()
@@ -395,6 +403,7 @@ def create_machines(request):
         status = request.POST.get('status', '').strip()
         priority = request.POST.get('priority', '').strip()
         assigned_to_id = request.POST.get('assigned_to')
+        collection_ids = request.POST.getlist('collections')  # List of selected collection IDs
 
         # models.py say that machinery.model can be blank
         errors = []
@@ -412,7 +421,8 @@ def create_machines(request):
         if errors:
             for error in errors:
                 messages.error(request, error)
-            return render(request, 'accounts/create_machinery.html', {'technicians': technicians})
+            return render(request, 'accounts/create_machinery.html',
+                          {'technicians': technicians, 'collections': collections})
 
         # Save the new machine
         machine = Machinery.objects.create(
@@ -423,7 +433,7 @@ def create_machines(request):
             priority=int(priority)
         )
 
-        # Optional: assign the machine to a technician
+        # Assign the machine to a technician
         if assigned_to_id:
             try:
                 assigned_to = User.objects.get(pk=assigned_to_id)
@@ -436,14 +446,25 @@ def create_machines(request):
             except User.DoesNotExist:
                 messages.warning(request, "Technician not found. Machine created without assignment.")
 
+        # Assign machine to selected collections
+        for collection_id in collection_ids:
+            if not collection_id.strip():
+                continue
+            try:
+                collection = Collection.objects.get(pk=collection_id)
+                MachineryCollection.objects.create(machinery=machine, collection=collection)
+            except Collection.DoesNotExist:
+                continue
+
         messages.success(request, f"Machine '{machine.name}' added successfully.")
         return redirect('accounts:manager_dashboard')
 
     # GET request
-    return render(request, 'accounts/create_machinery.html', {'technicians': technicians})
+    return render(request, 'accounts/create_machinery.html',
+                  {'technicians': technicians, 'collections': collections})
 
-# Only managers are able to add machines
-# accounts/dashboard/manager/machines/create
+# Only managers are able to update machines
+# accounts/dashboard/manager/machines/
 @login_required(login_url='accounts:web_login')
 def update_machines(request, machine_id):
     # Make sure only managers can access
@@ -454,6 +475,8 @@ def update_machines(request, machine_id):
     # Get machine + all technicians + all assignments for this machine
     machine = get_object_or_404(Machinery, pk=machine_id)
     technicians = User.objects.filter(role='TECHNICIAN')
+    collections = Collection.objects.all()
+    selected_collection_ids = machine.machinerycollection_set.values_list('collection_id', flat=True)
     all_assignments = MachineryAssignment.objects.select_related('machine', 'assigned_to', 'assigned_by').order_by('-assigned_at')
 
     if request.method == 'POST':
@@ -464,6 +487,7 @@ def update_machines(request, machine_id):
         status = request.POST.get('status', '').strip()
         priority = request.POST.get('priority', '').strip()
         assigned_to_id = request.POST.get('assigned_to')
+        collection_ids = request.POST.getlist('collections')  # Selected collection IDs
 
         # Validate input
         errors = []
@@ -485,6 +509,8 @@ def update_machines(request, machine_id):
             return render(request, 'accounts/update_machinery.html', {
                 'machine': machine,
                 'technicians': technicians,
+                'collections': collections,
+                'selected_collections': selected_collection_ids,
                 'assignments': all_assignments
             })
 
@@ -514,6 +540,17 @@ def update_machines(request, machine_id):
             except User.DoesNotExist:
                 messages.warning(request, "Technician not found. Machine updated without assignment.")
 
+        # Update collections
+        MachineryCollection.objects.filter(machinery=machine).delete()
+        for collection_id in collection_ids:
+            if not collection_id.strip():
+                continue
+            try:
+                collection = Collection.objects.get(pk=collection_id)
+                MachineryCollection.objects.create(machinery=machine, collection=collection)
+            except Collection.DoesNotExist:
+                continue
+
         messages.success(request, f"Machine '{machine.name}' updated successfully.")
         return redirect('accounts:manager_dashboard')
 
@@ -521,8 +558,103 @@ def update_machines(request, machine_id):
     return render(request, 'accounts/update_machinery.html', {
         'machine': machine,
         'technicians': technicians,
+        'collections': collections,
+        'selected_collections': selected_collection_ids,
         'all_assignments': all_assignments
     })
 
+# Only managers are able to delete machines
+# accounts/dashboard/manager/machines/<int:machine_id>/delete/'
+@login_required(login_url='accounts:web_login')
+def delete_machine(request, machine_id):
+    if request.user.role != 'MANAGER':
+        messages.error(request, "You don't have permission to delete machines.")
+        return redirect('accounts:dashboard')
 
+    machine = get_object_or_404(Machinery, pk=machine_id)
+    machine.delete()
+    messages.success(request, f"Machine '{machine.name}' was deleted successfully.")
+    return redirect('accounts:manager_dashboard')
 
+# Managers can generate reports!
+# Generate report for machines BY ID
+@login_required(login_url='accounts:web_login')
+def export_machine_by_id(request, machine_id):
+    if request.user.role != 'MANAGER':
+        messages.error(request, "You don't have permission to export this report.")
+        return redirect('accounts:dashboard')
+
+    # Get machine
+    machine = get_object_or_404(Machinery, pk=machine_id)
+
+    # Create the HttpResponse object with CSV headers
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = f'attachment; filename="machine_{machine_id}_report.csv"'
+
+    writer = csv.writer(response)
+    # Rows
+    writer.writerow(['ID', 'Name', 'Model', 'Status', 'Priority', 'Description', 'Assigned To', 'Assigned By', 'Collection(s)'])
+
+    assignment = MachineryAssignment.objects.filter(machine=machine, is_active=True).select_related('assigned_to', 'assigned_by').last()
+    assigned_to = assignment.assigned_to.get_full_name() if assignment and assignment.assigned_to else "Unassigned"
+    assigned_by = assignment.assigned_by.get_full_name() if assignment and assignment.assigned_by else "Unknown"
+    collections = ', '.join(c.collection.name for c in machine.machinerycollection_set.select_related('collection').all())
+
+    # Write machine to CSV
+    writer.writerow([
+        machine.machine_id,
+        machine.name,
+        machine.model,
+        machine.status,
+        machine.priority,
+        machine.description,
+        assigned_to,
+        assigned_by,
+        collections
+    ])
+
+    return response
+
+# Managers can generate reports!
+# Generate report for machines BY COLLECTION_ID
+@login_required(login_url='accounts:web_login')
+def export_machines_by_collection(request, collection_id):
+    if request.user.role != 'MANAGER':
+        messages.error(request, "You don't have permission to export this report.")
+        return redirect('accounts:dashboard')
+
+    # Get machine
+    collection = get_object_or_404(Collection, pk=collection_id)
+    # Get machines that belong to this collection through the many-to-many relationship
+    machines = (Machinery.objects
+                .filter(machinerycollection__collection_id=collection_id)
+                .prefetch_related('machinerycollection_set__collection'))
+
+    # Create the HttpResponse object with CSV headers
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = f'attachment; filename="collection_{collection.name}_report.csv"'
+
+    writer = csv.writer(response)
+    # Rows
+    writer.writerow(['ID', 'Name', 'Model', 'Status', 'Priority', 'Description', 'Assigned To', 'Assigned By', 'Collection(s)'])
+
+    for machine in machines:
+        assignment = MachineryAssignment.objects.filter(machine=machine, is_active=True).select_related('assigned_to', 'assigned_by').last()
+        assigned_to = assignment.assigned_to.get_full_name() if assignment and assignment.assigned_to else "Unassigned"
+        assigned_by = assignment.assigned_by.get_full_name() if assignment and assignment.assigned_by else "Unknown"
+        collections = ', '.join(c.collection.name for c in machine.machinerycollection_set.select_related('collection').all())
+
+        # Write machines to CSV
+        writer.writerow([
+            machine.machine_id,
+            machine.name,
+            machine.model,
+            machine.status,
+            machine.priority,
+            machine.description,
+            assigned_to,
+            assigned_by,
+            collections
+        ])
+
+    return response

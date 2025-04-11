@@ -48,8 +48,7 @@ INSTALLED_APPS = [
     'core',
     'accounts',
     'machinery',
-    'repairs',
-    'dashboard',
+    'repairs'
 ]
 
 REST_FRAMEWORK = {

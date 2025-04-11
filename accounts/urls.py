@@ -35,5 +35,9 @@ urlpatterns = [
 
     # Add from /dashboard
     path('dashboard/manager/machines/create', views.create_machines, name='create_machines'),
-    path('dashboard/manager/machines<int:machine_id>/edit/', views.update_machines, name='update_machines'),
+    path('dashboard/manager/machines/<int:machine_id>/edit/', views.update_machines, name='update_machines'),
+    path('dashboard/manager/machines/<int:machine_id>/delete/', views.delete_machine, name='delete_machine'),
+    path('dashboard/manager/machines/<int:machine_id>/export/', views.export_machine_by_id, name='export_machine_by_id'),
+    path('dashboard/manager/collections/<int:collection_id>/export/', views.export_machines_by_collection, name='export_machines_by_collection'),
+
 ]
