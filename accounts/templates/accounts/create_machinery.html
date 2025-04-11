@@ -32,7 +32,7 @@
 
     <!-- Create machine form -->
     <div class="container d-flex justify-content-center align-items-center" style="height: 100vh;">
-        <div class="card shadow-lg p-4" style="width: 400px;">
+        <div class="card shadow-lg p-4" style="width: 800px;">
             <h3 class="text-center mb-3">Create a machine</h3>
             <p class="text-center mb-4">Create a machine here.</p>
 
@@ -67,8 +67,19 @@
                     <input type="number" name="priority" class="form-control" min="0" required>
                 </div>
 
+                <!-- Add machine to collection here -->
                 <div class="mb-4">
-                    <label for="assigned_to" class="form-label">Assign to Technician (optional):</label>
+                    <label for="collections" class="form-label">Add to Collection(s):</label>
+                    <select name="collections" class="form-select" multiple>
+                        {% for collection in collections %}
+                            <option value="{{ collection.pk }}">{{ collection.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Assign technician here -->
+                <div class="mb-4">
+                    <label for="assigned_to" class="form-label">Assign to Technician:</label>
                     <select name="assigned_to" class="form-select">
                         <option value="">-- None --</option>
                         {% for tech in technicians %}

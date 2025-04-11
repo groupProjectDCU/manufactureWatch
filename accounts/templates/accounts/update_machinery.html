@@ -33,7 +33,7 @@
 
     <!-- Update machine form -->
     <div class="container d-flex justify-content-center align-items-center" style="height: 100vh;">
-        <div class="card shadow-lg p-4" style="width: 400px;">
+        <div class="card shadow-lg p-4" style="width: 800px;">
             <h3 class="text-center mb-3">Update a machine</h3>
             <p class="text-center mb-4">Update a machine here.</p>
 
@@ -67,6 +67,20 @@
                 <div class="mb-3">
                     <label for="priority" class="form-label">Priority:</label>
                     <input type="number" name="priority" class="form-control" min="0" value="{{ machine.priority }}" required>
+                </div>
+
+                <div class="mb-4">
+                    <label for="collections" class="form-label">Add to Collection(s):</label>
+                    <select name="collections" class="form-select" multiple>
+                        {% for collection in collections %}
+                            <option value="{{ collection.pk }}"
+                                {% if collection.pk in selected_collections %}
+                                    selected
+                                {% endif %}>
+                                {{ collection.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
                 </div>
 
                 <div class="mb-4">
