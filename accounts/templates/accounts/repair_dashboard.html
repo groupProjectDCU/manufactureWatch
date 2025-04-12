@@ -4,8 +4,7 @@
 {% block title %}Repair Dashboard - Factory Machinery Status & Repair Tracking{% endblock %}
 
 {% block dashboard_title %}
-    Repair Team Dashboard
-    <button class="btn btn-danger btn-sm ms-2">Repair</button>
+    Dashboard
 {% endblock %}
 
 {% block sidebar_items %}
@@ -18,17 +17,17 @@
     <p>View and manage machine repairs</p>
 
     <!-- Repair Status Overview Cards -->
-    <div class="row text-center mb-4">
+    <div class="row mb-4">
         <div class="col-md-4">
-            <div class="card border-danger status-card" data-status="pending" role="button">
+            <div class="card border-danger status-card open-card" data-status="open" role="button">
                 <div class="card-body">
-                    <h5 class="card-title text-danger">Pending Repairs</h5>
-                    <p class="display-6"><span id="pending-count">0</span> Machines</p>
+                    <h5 class="card-title text-danger">Open Repairs</h5>
+                    <p class="display-6"><span id="open-count">0</span> Machines</p>
                 </div>
             </div>
         </div>
         <div class="col-md-4">
-            <div class="card border-warning status-card" data-status="in_progress" role="button">
+            <div class="card border-warning status-card in-progress-card" data-status="in_progress" role="button">
                 <div class="card-body">
                     <h5 class="card-title text-warning">In Progress</h5>
                     <p class="display-6"><span id="in-progress-count">0</span> Machines</p>
@@ -36,10 +35,10 @@
             </div>
         </div>
         <div class="col-md-4">
-            <div class="card border-success status-card" data-status="completed" role="button">
+            <div class="card border-success status-card resolved-card" data-status="resolved" role="button">
                 <div class="card-body">
-                    <h5 class="card-title text-success">Completed</h5>
-                    <p class="display-6"><span id="completed-count">0</span> Machines</p>
+                    <h5 class="card-title text-success">Resolved</h5>
+                    <p class="display-6"><span id="resolved-count">0</span> Machines</p>
                 </div>
             </div>
         </div>
@@ -82,9 +81,13 @@
                             <label class="form-label">Parts Used</label>
                             <textarea class="form-control" id="partsUsed" name="partsUsed" rows="2" placeholder="List parts used"></textarea>
                         </div>
+                        
+                        <!-- Container for previous notes -->
+                        <div id="previousNotesContainer"></div>
+                        
                         <div class="mb-3">
-                            <label class="form-label">Repair Notes</label>
-                            <textarea class="form-control" id="repairNotes" name="repairNotes" rows="3" placeholder="Describe repair process and outcomes"></textarea>
+                            <label class="form-label">Add New Note</label>
+                            <textarea class="form-control" id="repairNotes" name="repairNotes" rows="3" placeholder="Enter new repair notes"></textarea>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Upload Images</label>
@@ -94,7 +97,73 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="saveRepairDetails">Save Changes</button>
+                    <button type="button" class="btn btn-primary" id="submitRepairUpdate">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Machine Details Modal -->
+    <div class="modal fade" id="machineDetailsModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <span id="machine-name">Machine Details</span>
+                        <span id="machine-status" class="badge bg-secondary ms-2">Unknown</span>
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5>Machine Details</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <strong>Model:</strong>
+                                        <span id="machine-model">Loading...</span>
+                                    </div>
+                                    <div class="mb-3">
+                                        <strong>Serial Number:</strong>
+                                        <span id="machine-serial">Loading...</span>
+                                    </div>
+                                    <div class="mb-3">
+                                        <strong>Last Maintenance:</strong>
+                                        <span id="machine-maintenance">Not available</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5>Actions</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="d-grid gap-2">
+                                        <button class="btn btn-primary">Schedule Maintenance</button>
+                                        <button class="btn btn-warning">Report Issue</button>
+                                        <button class="btn btn-info">View Documentation</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h5>Repair History</h5>
+                    <div id="repairs-list">
+                        <p class="text-center">
+                            <span class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </span>
+                        </p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
@@ -103,16 +172,46 @@
 
 {% block extra_css %}
 <style>
+    /* Status card hover effects */
     .status-card {
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         cursor: pointer;
-        transition: transform 0.2s, box-shadow 0.2s;
     }
+    
     .status-card:hover {
         transform: translateY(-5px);
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
     }
-    .status-card.border-4 {
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    
+    /* Add a subtle pulse effect to highlight active card */
+    .status-card.active {
+        animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+        0% {
+            box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
+        }
+        70% {
+            box-shadow: 0 0 0 10px rgba(255, 255, 255, 0);
+        }
+        100% {
+            box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+        }
+    }
+    
+    /* Card specific styles */
+    .open-card {
+        background-color: rgba(220, 53, 69, 0.1);
+    }
+    
+    .in-progress-card {
+        background-color: rgba(255, 193, 7, 0.1);
+    }
+    
+    .resolved-card {
+        background-color: rgba(40, 167, 69, 0.1);
     }
 </style>
 {% endblock %}
