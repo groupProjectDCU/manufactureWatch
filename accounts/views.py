@@ -9,14 +9,13 @@ from rest_framework.decorators import api_view, permission_classes
 from machinery.models import Machinery, MachineryAssignment, Collection, MachineryCollection
 from .serializers import UserSerializer
 from .models import User
+from repairs.models import FaultCase
 import json
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.permissions import AllowAny
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-
-
 
 # Web views for traditional form-based authentication
 def web_login(request):
@@ -327,12 +326,37 @@ def manager_dashboard(request):
 
 @login_required(login_url='accounts:web_login')
 def technician_dashboard(request):
-    """Dashboard for technicians"""
-    # Check if user has technician role
     if request.user.role != 'TECHNICIAN':
         messages.error(request, "You don't have permission to access the technician dashboard.")
         return redirect('accounts:dashboard')
-    return render(request, 'accounts/technician_dashboard.html')
+
+    # Fetch machines assigned to this technician
+    assigned_ids = MachineryAssignment.objects.filter(
+        assigned_to=request.user,
+        is_active=True
+    ).values_list('machine_id', flat=True)
+
+    if assigned_ids:
+        assigned_machines = Machinery.objects.filter(
+            machine_id__in=assigned_ids
+        ).prefetch_related('machinerycollection_set__collection')
+        fallback_used = False
+    else:
+        # Fallback: show all machines
+        assigned_machines = Machinery.objects.all().prefetch_related('machinerycollection_set__collection')
+        fallback_used = True
+
+    fault_cases = {}
+    for machine in assigned_machines:
+        fault = FaultCase.objects.filter(machine=machine).order_by('-created_at').first()
+        if fault:
+            fault_cases[machine.machine_id] = fault.case_id
+
+    return render(request, 'accounts/technician_dashboard.html', {
+        'assigned_machines': assigned_machines,
+        'fallback_used': fallback_used,
+        'fault_cases': fault_cases
+    })
 
 @login_required(login_url='accounts:web_login')
 def repair_dashboard(request):

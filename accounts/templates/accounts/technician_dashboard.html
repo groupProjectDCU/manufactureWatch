@@ -1,4 +1,5 @@
 {% extends 'accounts/dashboard_base.html' %}
+{% load custom_filters %}
 
 {% block title %}Technician Dashboard - Factory Machinery Status & Repair Tracking{% endblock %}
 
@@ -12,96 +13,119 @@
 {% endblock %}
 
 {% block dashboard_content %}
-    <p>You are responsible for monitoring machinery, maintaining records, and coordination with repair personnel.</p>
+<p>You are responsible for monitoring machinery, maintaining records, and coordinating with repair personnel.</p>
 
-    <!-- Assigned Machines Table -->
-    <div class="card mb-4">
-        <div class="card-header bg-primary text-white">
+<!-- Assigned or All Machines -->
+<div class="card mb-4">
+    <div class="card-header bg-primary text-white">
+        {% if fallback_used %}
+            No machines assigned — showing all available machinery
+        {% else %}
             My Assigned Machines
-        </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-striped align-middle">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>Machine ID</th>
-                            <th>Name</th>
-                            <th>Location</th>
-                            <th>Status</th>
-                            <th>Last Check</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>FM-101</td>
-                            <td>Hydraulic Press</td>
-                            <td>Building 1</td>
-                            <td><span class="badge bg-success">Operational</span></td>
-                            <td>2025-04-01</td>
-                            <td>
-                                <button class="btn btn-sm btn-warning">Add Warning</button>
-                                <button class="btn btn-sm btn-danger">Report Fault</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>FM-102</td>
-                            <td>Assembly Line Robot</td>
-                            <td>Building 2</td>
-                            <td><span class="badge bg-warning text-dark">Warning</span></td>
-                            <td>2025-04-05</td>
-                            <td>
-                                <button class="btn btn-sm btn-warning">Add Warning</button>
-                                <button class="btn btn-sm btn-danger">Report Fault</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>FM-104</td>
-                            <td>Packaging Machine</td>
-                            <td>Building 3</td>
-                            <td><span class="badge bg-success">Operational</span></td>
-                            <td>2025-04-07</td>
-                            <td>
-                                <button class="btn btn-sm btn-warning">Add Warning</button>
-                                <button class="btn btn-sm btn-danger">Report Fault</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+        {% endif %}
     </div>
+    <div class="card-body">
+        {% if assigned_machines %}
+        <div class="table-responsive">
+            <table class="table table-striped align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Machine ID</th>
+                        <th>Name</th>
+                        <th>Location</th>
+                        <th>Status</th>
+                        <th>Priority</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for machine in assigned_machines %}
+                    <tr>
+                        <td>{{ machine.machine_id }}</td>
+                        <td>{{ machine.name }}</td>
+                        <td>
+                            {% for mc in machine.machinerycollection_set.all %}
+                                {{ mc.collection.name }}{% if not forloop.last %}, {% endif %}
+                            {% empty %}—
+                            {% endfor %}
+                        </td>
+                        <td>
+                            {% if machine.status == "OK" %}
+                                <span class="badge bg-success">OK</span>
+                            {% elif machine.status == "WARNING" %}
+                                <span class="badge bg-warning text-dark">Warning</span>
+                            {% elif machine.status == "FAULT" %}
+                                <span class="badge bg-danger">Fault</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Unknown</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if machine.priority >= 7 %}
+                                <span class="badge bg-danger">High</span>
+                            {% elif machine.priority >= 4 %}
+                                <span class="badge bg-warning text-dark">Medium</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Low</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <button class="btn btn-sm btn-warning">Add Warning</button>
 
-    <!-- Upload Notes/Images -->
-    <div class="card mb-4">
-        <div class="card-header bg-info text-white">
-            Upload Notes/Images
+                            {% if machine.status != "FAULT" %}
+                                <a href="{% url 'repairs:fault_case_create' %}" class="btn btn-sm btn-danger">Report Fault</a>
+                            {% endif %}
+
+                            {% with fault_cases|get_item:machine.machine_id as case_id %}
+                                {% if machine.status != "OK" and case_id %}
+                                    <a href="{% url 'repairs:fault_case_detail' case_id %}" class="btn btn-sm btn-success">
+                                        View Fault
+                                    </a>
+                                {% elif not case_id %}
+                                    <span class="text-muted">No Fault</span>
+                                {% endif %}
+                            {% endwith %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
-        <div class="card-body">
-            <form>
-                <div class="mb-3">
-                    <label class="form-label">Machine ID</label>
-                    <select class="form-select">
-                        <option>Select Machine</option>
-                        <option>FM-101</option>
-                        <option>FM-102</option>
-                        <option>FM-104</option>
-                    </select>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Notes</label>
-                    <textarea class="form-control" rows="3" placeholder="Enter your maintenance notes"></textarea>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Upload Images</label>
-                    <input class="form-control" type="file" multiple>
-                </div>
-                <button class="btn btn-primary">Submit</button>
-            </form>
-        </div>
+        {% else %}
+        <div class="alert alert-info">No machines available to show at this time.</div>
+        {% endif %}
     </div>
+</div>
+
+<!-- Upload Notes/Images -->
+<div class="card mb-4">
+    <div class="card-header bg-info text-white">
+        Upload Notes/Images
+    </div>
+    <div class="card-body">
+        <form>
+            <div class="mb-3">
+                <label class="form-label">Machine</label>
+                <select class="form-select" required>
+                    <option selected disabled>Select Machine</option>
+                    {% for machine in assigned_machines %}
+                        <option value="{{ machine.machine_id }}">{{ machine.name }} ({{ machine.model|default:"No Model" }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Notes</label>
+                <textarea class="form-control" rows="3" placeholder="Enter your maintenance notes"></textarea>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Upload Images</label>
+                <input class="form-control" type="file" multiple>
+            </div>
+            <button class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+</div>
 {% endblock %}
 
 {% block extra_js %}
-<!-- Additional JavaScript specific to technician dashboard can go here -->
 {% endblock %}
