@@ -33,4 +33,9 @@ urlpatterns = [
     path('dashboard/manager/machines/<int:machine_id>/delete/', views.delete_machine, name='delete_machine'),
     path('dashboard/manager/machines/<int:machine_id>/export/', views.export_machine_by_id, name='export_machine_by_id'),
     path('dashboard/manager/collections/<int:collection_id>/export/', views.export_machines_by_collection, name='export_machines_by_collection'),
+
+    path('dashboard/manager/collections/create/', views.create_collection, name='create_collection'),
+    path('dashboard/manager/collections/<int:collection_id>/delete/', views.delete_collection, name='delete_collection'),
+
+
 ]

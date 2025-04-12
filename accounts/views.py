@@ -298,6 +298,22 @@ def manager_dashboard(request):
         for mc in machine.machinerycollection_set.all():
             machine_collections[machine.machine_id].append(mc.collection.name)
 
+    # Adding collections
+    collections = Collection.objects.prefetch_related('machines').order_by('name')
+
+    collection_summaries = []
+    for collection in collections:
+        # Get distinct only
+        related_machines = collection.machines.all().distinct()
+
+        collection_summaries.append({
+            'id': collection.collection_id,
+            'name': collection.name,
+            'description': collection.description,
+            'machines': related_machines
+        })
+
+    # Render
     return render(request, 'accounts/manager_dashboard.html', {
         'machines': machines,
         'assignments': assignments,
@@ -305,7 +321,8 @@ def manager_dashboard(request):
         'ok_count': ok_count,
         'warning_count': warning_count,
         'fault_count': fault_count,
-        'total_count': total_count
+        'total_count': total_count,
+        'collection_summaries': collection_summaries
     })
 
 @login_required(login_url='accounts:web_login')
@@ -629,3 +646,46 @@ def export_machines_by_collection(request, collection_id):
         ])
 
     return response
+
+from machinery.models import Collection
+from django.views.decorators.http import require_http_methods
+
+# If manager, create a collection
+@login_required(login_url='accounts:web_login')
+def create_collection(request):
+    if request.user.role != 'MANAGER':
+        messages.error(request, "You don't have permission to create collections.")
+        return redirect('accounts:dashboard')
+
+    if request.method == 'POST':
+        name = request.POST.get('name', '').strip()
+        description = request.POST.get('description', '').strip()
+
+        if not name:
+            messages.error(request, "Collection name is required.")
+            return render(request, 'accounts/create_collection.html')
+
+        # Check for duplicates
+        if Collection.objects.filter(name__iexact=name).exists():
+            messages.error(request, "A collection with that name already exists.")
+            return render(request, 'accounts/create_collection.html')
+
+        # Create a collection
+        Collection.objects.create(name=name, description=description)
+        messages.success(request, f"Collection '{name}' created successfully.")
+        return redirect('accounts:manager_dashboard')
+
+    return render(request, 'accounts/create_collection.html')
+
+# Delete collection
+@login_required(login_url='accounts:web_login')
+def delete_collection(request, collection_id):
+    if request.user.role != 'MANAGER':
+        messages.error(request, "You don't have permission to delete collections.")
+        return redirect('accounts:dashboard')
+
+    collection = get_object_or_404(Collection, pk=collection_id)
+    collection_name = collection.name
+    collection.delete()
+    messages.success(request, f"Collection '{collection_name}' was deleted successfully.")
+    return redirect('accounts:manager_dashboard')
