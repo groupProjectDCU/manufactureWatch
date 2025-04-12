@@ -83,20 +83,47 @@
                     </select>
                 </div>
 
+                <!-- Assign Technician -->
                 <div class="mb-4">
-                    <label for="assigned_to" class="form-label">Assign Technician</label>
-                    <select name="assigned_to" class="form-select">
-                        <option value="">-- None --</option>
-                        {% for tech in technicians %}
-                            <option value="{{ tech.id }}"
-                                {% if assignments and assignments.0.assigned_to.id == tech.id %}
-                                    selected
-                                {% endif %}
-                            >{{ tech.get_full_name }}</option>
+                    <label for="assigned_technician" class="form-label">Assign Technician</label>
+                    <select name="assigned_technician" class="form-select">
+                        <option value="">— Select Technician —</option>
+                        {% for user in staff %}
+                            {% if user.role == "TECHNICIAN" %}
+                                <option value="{{ user.id }}"
+                                    {% for a in machine.machineryassignment_set.all %}
+                                        {% if a.assigned_to.id == user.id and a.is_active and a.assigned_to.role == "TECHNICIAN" %}
+                                            selected
+                                        {% endif %}
+                                    {% endfor %}
+                                >
+                                    {{ user.get_full_name }}
+                                </option>
+                            {% endif %}
                         {% endfor %}
                     </select>
                 </div>
 
+                <!-- Assign Repair Staff -->
+                <div class="mb-4">
+                    <label for="assigned_repair" class="form-label">Assign Repair Staff</label>
+                    <select name="assigned_repair" class="form-select">
+                        <option value="">— Select Repair Staff —</option>
+                        {% for user in staff %}
+                            {% if user.role == "REPAIR" %}
+                                <option value="{{ user.id }}"
+                                    {% for a in machine.machineryassignment_set.all %}
+                                        {% if a.assigned_to.id == user.id and a.is_active and a.assigned_to.role == "REPAIR" %}
+                                            selected
+                                        {% endif %}
+                                    {% endfor %}
+                                >
+                                    {{ user.get_full_name }}
+                                </option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
                 <button type="submit" class="btn btn-primary w-100">Update Machine</button>
             </form>
         </div>
