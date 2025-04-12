@@ -17,14 +17,13 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path, include
-from accounts.urls import api_urlpatterns as accounts_api_urlpatterns
-from machinery.urls import api_urlpatterns as machinery_api_urlpatterns
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     # API Routes
-    path('api/accounts/', include(accounts_api_urlpatterns)),
-    path('api/machinery/', include(machinery_api_urlpatterns)),
+    path('api/accounts/', include('accounts.api.urls')),
+    path('api/machinery/', include('machinery.api.urls')),
+    path('api/repairs/', include('repairs.api.urls')),
     # Web Routes
     path('', include('core.urls')),
     path('accounts/', include('accounts.urls', namespace='accounts')),

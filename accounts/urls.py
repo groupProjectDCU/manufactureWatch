@@ -4,12 +4,6 @@ from . import views
 
 app_name = 'accounts'
 
-# API endpoints
-api_urlpatterns = ([
-    path('signup/', views.signup_view, name='api_signup'),
-    path('login/', views.login_view, name='api_login'),
-], 'accounts_api')
-
 # Web URLs for traditional form-based authentication
 urlpatterns = [
     # Authentication URLs
@@ -39,5 +33,4 @@ urlpatterns = [
     path('dashboard/manager/machines/<int:machine_id>/delete/', views.delete_machine, name='delete_machine'),
     path('dashboard/manager/machines/<int:machine_id>/export/', views.export_machine_by_id, name='export_machine_by_id'),
     path('dashboard/manager/collections/<int:collection_id>/export/', views.export_machines_by_collection, name='export_machines_by_collection'),
-
 ]
