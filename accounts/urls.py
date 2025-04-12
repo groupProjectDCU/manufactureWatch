@@ -36,6 +36,4 @@ urlpatterns = [
 
     path('dashboard/manager/collections/create/', views.create_collection, name='create_collection'),
     path('dashboard/manager/collections/<int:collection_id>/delete/', views.delete_collection, name='delete_collection'),
-
-
 ]

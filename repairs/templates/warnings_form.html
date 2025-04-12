@@ -1,0 +1,17 @@
+{% extends 'accounts/dashboard_base.html' %}
+
+{% block title %}Add Warning - Factory Machinery Tracking{% endblock %}
+
+{% block dashboard_title %}Add Warning{% endblock %}
+
+{% block dashboard_content %}
+    <h3>Add Warning for {{ machine.name }}</h3>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="warning" class="form-label">Warning Message</label>
+            <textarea class="form-control" name="warning" rows="3" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-warning">Submit Warning</button>
+    </form>
+{% endblock %}

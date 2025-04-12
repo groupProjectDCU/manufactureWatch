@@ -9,7 +9,7 @@ from rest_framework.decorators import api_view, permission_classes
 from machinery.models import Machinery, MachineryAssignment, Collection, MachineryCollection
 from .serializers import UserSerializer
 from .models import User
-from repairs.models import FaultCase
+from repairs.models import FaultCase, Warning
 import json
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.permissions import AllowAny
