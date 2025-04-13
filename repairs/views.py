@@ -35,7 +35,6 @@ def fault_case_detail(request, fault_case_id):
     notes = FaultNote.objects.filter(case=fault).order_by('-created_at') # Fetch all notes related to the fault case
     return render(request, 'fault_detail.html', {'fault_case': fault, 'notes': notes}) # Render the details of the fault case
 
-
 @login_required
 def fault_case_create(request):
     """
@@ -44,39 +43,47 @@ def fault_case_create(request):
     - On POST, validates the form data and saves the new fault case and the fault note to the database.
     """
     if not request.user.role == 'TECHNICIAN':  # Only technicians can create a fault case
-        return render(request, '403.html', status=403)  # Render a 403 Forbidden page
+        messages.error(request, "You don't have permission to create a fault case.")
+        return redirect('home')  # Redirect to home or an appropriate page
 
+    machine = None  # Placeholder if machine data is missing
     if request.method == 'POST':
-        form = FaultCaseForm(request.POST)  # Bind the submitted data to the form
+        form = FaultCaseForm(request.POST, request.FILES)  # Include files in form submission
         note = request.POST.get('note')  # Get the note from the POST data
+        fault_image = request.FILES.get('fault_image')  # Get the uploaded image
+        machine_id = request.POST.get('machine')  # Get the selected machine
 
         # Validate the form data
         if form.is_valid():
             fault = form.save(commit=False)  # Create a new FaultCase instance but don't save it yet
             fault.created_by = request.user  # Set the user who created the fault case
+            fault.machine_id = machine_id  # Associate the fault with the selected machine
             fault.save()  # Save the fault case to the database
 
-            # Update the machine's status to 'FAULT' when a fault is created
-            machine = fault.machine  # Get the machine related to this fault case
-            machine.status = 'FAULT'
-            machine.save()
+            # Save the uploaded image if available
+            if fault_image:
+                pass  # Add logic to handle the image upload if necessary
 
             # Create a new FaultNote
             if note:
-                # Use the correct field name here
                 FaultNote.objects.create(
-                    case=fault,  # 'case' instead of 'fault'
+                    case=fault,
                     user=request.user,
                     note=note
                 )
 
+            # Update the machine status to 'FAULT'
+            machine = fault.machine  # Get the machine associated with the fault
+            machine.status = 'FAULT'  # Change machine status to FAULT
+            machine.save()  # Save the updated machine status
+
             messages.success(request, f"Fault case #{fault.case_id} was successfully created.")
-            return redirect('accounts:technician_dashboard')  # Redirect back to the technician dashboard
+            return redirect('accounts:technician_dashboard')  # Redirect back to the technician dashboard after submission
     else:
         form = FaultCaseForm()  # Create an empty form for GET requests
+        machine = Machinery.objects.first()  # You can modify this logic to fetch a specific machine if needed
 
-    return render(request, 'fault_form.html', {'form': form})  # Render the form template
-
+    return render(request, 'fault_form.html', {'form': form, 'machine': machine})  # Pass the machine to the template
 
 
 @login_required
