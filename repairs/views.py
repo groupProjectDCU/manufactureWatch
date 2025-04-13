@@ -131,32 +131,3 @@ def fault_note_create(request, fault_case_id):
         form = FaultNoteForm() # Create an empty form for GET requests
     return render(request, 'note_form.html', {'form': form, 'fault_case': fault}) # Render the form template for creating a new note
 
-# Add warnings (only Tech can do that)
-# @login_required
-# def warning_form(request, machine_id):
-#     # Get the machine for which the warning is being created
-#     machine = get_object_or_404(Machinery, machine_id=machine_id)
-#
-#     if request.method == 'POST':
-#         # Process the form submission
-#         message = request.POST.get('message')
-#
-#         # Create new warning object
-#         warning = Warning.objects.create(
-#             machine=machine,
-#             message=message,
-#             added_by=request.user,
-#             is_active=True
-#         )
-#
-#         # The Warning model's save method will automatically update the machine status
-#
-#         messages.success(request, f"Warning reported successfully for {machine.name}")
-#         return redirect('accounts:technician_dashboard')
-#
-#     # Render the warning form template
-#     context = {
-#         'machine': machine
-#     }
-#     return render(request, 'warnings_form.html', context)
-
