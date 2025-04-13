@@ -4,7 +4,7 @@ from .models import FaultCase, FaultNote
 class FaultCaseForm(forms.ModelForm):
     class Meta:
         model = FaultCase
-        fields = ['machine', 'description', 'priority'] # Replace with the actual field names you want to include
+        fields = ['machine', 'description', 'priority'] 
 
     def __init__(self, *args, **kwargs): # Initialize the form
         super().__init__(*args, **kwargs)
