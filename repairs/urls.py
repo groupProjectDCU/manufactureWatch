@@ -18,6 +18,5 @@ urlpatterns = [
     path('faults/<uuid:fault_case_id>/', views.fault_case_detail, name='fault_case_detail'),
     path('faults/create/', views.fault_case_create, name='fault_case_create'),
     path('faults/<uuid:fault_case_id>/update/', views.fault_case_update, name='fault_case_update'),
-    path('faults/<uuid:fault_case_id>/fault_note_create/', views.fault_note_create, name='fault_note_create'),
-    # path('warnings/create/<int:machine_id>/', views.warning_form, name='warning_form'),
+    path('faults/<uuid:fault_case_id>/fault_note_create/', views.fault_note_create, name='fault_note_create')
 ]
