@@ -9,14 +9,13 @@ from rest_framework.decorators import api_view, permission_classes
 from machinery.models import Machinery, MachineryAssignment, Collection, MachineryCollection
 from .serializers import UserSerializer
 from .models import User
+from repairs.models import FaultCase, Warning
 import json
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.permissions import AllowAny
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-
-
 
 # Web views for traditional form-based authentication
 def web_login(request):
@@ -298,6 +297,22 @@ def manager_dashboard(request):
         for mc in machine.machinerycollection_set.all():
             machine_collections[machine.machine_id].append(mc.collection.name)
 
+    # Adding collections
+    collections = Collection.objects.prefetch_related('machines').order_by('name')
+
+    collection_summaries = []
+    for collection in collections:
+        # Get distinct only
+        related_machines = collection.machines.all().distinct()
+
+        collection_summaries.append({
+            'id': collection.collection_id,
+            'name': collection.name,
+            'description': collection.description,
+            'machines': related_machines
+        })
+
+    # Render
     return render(request, 'accounts/manager_dashboard.html', {
         'machines': machines,
         'assignments': assignments,
@@ -305,17 +320,43 @@ def manager_dashboard(request):
         'ok_count': ok_count,
         'warning_count': warning_count,
         'fault_count': fault_count,
-        'total_count': total_count
+        'total_count': total_count,
+        'collection_summaries': collection_summaries
     })
 
 @login_required(login_url='accounts:web_login')
 def technician_dashboard(request):
-    """Dashboard for technicians"""
-    # Check if user has technician role
     if request.user.role != 'TECHNICIAN':
         messages.error(request, "You don't have permission to access the technician dashboard.")
         return redirect('accounts:dashboard')
-    return render(request, 'accounts/technician_dashboard.html')
+
+    # Fetch machines assigned to this technician
+    assigned_ids = MachineryAssignment.objects.filter(
+        assigned_to=request.user,
+        is_active=True
+    ).values_list('machine_id', flat=True)
+
+    if assigned_ids:
+        assigned_machines = Machinery.objects.filter(
+            machine_id__in=assigned_ids
+        ).prefetch_related('machinerycollection_set__collection')
+        fallback_used = False
+    else:
+        # Fallback: show all machines
+        assigned_machines = Machinery.objects.all().prefetch_related('machinerycollection_set__collection')
+        fallback_used = True
+
+    fault_cases = {}
+    for machine in assigned_machines:
+        fault = FaultCase.objects.filter(machine=machine).order_by('-created_at').first()
+        if fault:
+            fault_cases[machine.machine_id] = fault.case_id
+
+    return render(request, 'accounts/technician_dashboard.html', {
+        'assigned_machines': assigned_machines,
+        'fallback_used': fallback_used,
+        'fault_cases': fault_cases
+    })
 
 @login_required(login_url='accounts:web_login')
 def repair_dashboard(request):
@@ -364,7 +405,7 @@ def create_machines(request):
         messages.error(request, "You don't have permission to access the manager dashboard.")
         return redirect('accounts:dashboard')
 
-    technicians = User.objects.filter(role='TECHNICIAN')
+    staff = User.objects.filter(role__in=['TECHNICIAN', 'REPAIR'])
     collections = Collection.objects.all()
 
     if request.method == 'POST':
@@ -373,7 +414,8 @@ def create_machines(request):
         description = request.POST.get('description', '').strip()
         status = request.POST.get('status', '').strip()
         priority = request.POST.get('priority', '').strip()
-        assigned_to_id = request.POST.get('assigned_to')
+        assigned_tech_id = request.POST.get('assigned_technician')
+        assigned_repair_id = request.POST.get('assigned_repair')
         collection_ids = request.POST.getlist('collections')  # List of selected collection IDs
 
         # models.py say that machinery.model can be blank
@@ -393,7 +435,7 @@ def create_machines(request):
             for error in errors:
                 messages.error(request, error)
             return render(request, 'accounts/create_machinery.html',
-                          {'technicians': technicians, 'collections': collections})
+                          {'staff': staff, 'collections': collections})
 
         # Save the new machine
         machine = Machinery.objects.create(
@@ -405,17 +447,30 @@ def create_machines(request):
         )
 
         # Assign the machine to a technician
-        if assigned_to_id:
+        if assigned_tech_id:
             try:
-                assigned_to = User.objects.get(pk=assigned_to_id)
+                tech = User.objects.get(pk=assigned_tech_id, role='TECHNICIAN')
                 MachineryAssignment.objects.create(
                     machine=machine,
                     assigned_by=request.user,
-                    assigned_to=assigned_to,
+                    assigned_to=tech,
                     is_active=True
                 )
             except User.DoesNotExist:
-                messages.warning(request, "Technician not found. Machine created without assignment.")
+                messages.warning(request, "Technician not found.")
+
+        # Assign machine to repairman
+        if assigned_repair_id:
+            try:
+                repair = User.objects.get(pk=assigned_repair_id, role='REPAIR')
+                MachineryAssignment.objects.create(
+                    machine=machine,
+                    assigned_by=request.user,
+                    assigned_to=repair,
+                    is_active=True
+                )
+            except User.DoesNotExist:
+                messages.warning(request, "Repair person not found.")
 
         # Assign machine to selected collections
         for collection_id in collection_ids:
@@ -432,7 +487,7 @@ def create_machines(request):
 
     # GET request
     return render(request, 'accounts/create_machinery.html',
-                  {'technicians': technicians, 'collections': collections})
+                  {'staff': staff, 'collections': collections})
 
 # Only managers are able to update machines
 # accounts/dashboard/manager/machines/
@@ -443,9 +498,9 @@ def update_machines(request, machine_id):
         messages.error(request, "You don't have permission to access this page.")
         return redirect('accounts:dashboard')
 
-    # Get machine + all technicians + all assignments for this machine
+    # Get machine + all relevant staff + collections + assignments
     machine = get_object_or_404(Machinery, pk=machine_id)
-    technicians = User.objects.filter(role='TECHNICIAN')
+    staff = User.objects.filter(role__in=['TECHNICIAN', 'REPAIR'])
     collections = Collection.objects.all()
     selected_collection_ids = machine.machinerycollection_set.values_list('collection_id', flat=True)
     all_assignments = MachineryAssignment.objects.select_related('machine', 'assigned_to', 'assigned_by').order_by('-assigned_at')
@@ -457,8 +512,9 @@ def update_machines(request, machine_id):
         description = request.POST.get('description', '').strip()
         status = request.POST.get('status', '').strip()
         priority = request.POST.get('priority', '').strip()
-        assigned_to_id = request.POST.get('assigned_to')
-        collection_ids = request.POST.getlist('collections')  # Selected collection IDs
+        assigned_tech_id = request.POST.get('assigned_technician')
+        assigned_repair_id = request.POST.get('assigned_repair')
+        collection_ids = request.POST.getlist('collections')
 
         # Validate input
         errors = []
@@ -470,7 +526,6 @@ def update_machines(request, machine_id):
             errors.append("Machine status is required.")
         if not priority:
             errors.append("Machine priority is required.")
-
         if model and Machinery.objects.exclude(pk=machine_id).filter(model=model).exists():
             errors.append("Another machine with this model already exists.")
 
@@ -479,10 +534,10 @@ def update_machines(request, machine_id):
                 messages.error(request, error)
             return render(request, 'accounts/update_machinery.html', {
                 'machine': machine,
-                'technicians': technicians,
+                'staff': staff,
                 'collections': collections,
                 'selected_collections': selected_collection_ids,
-                'assignments': all_assignments
+                'all_assignments': all_assignments
             })
 
         # Save changes
@@ -493,23 +548,35 @@ def update_machines(request, machine_id):
         machine.priority = int(priority)
         machine.save()
 
-        # Handle assignment (optional)
-        if assigned_to_id:
+        # Handle assignment
+        # Clear previous active assignments
+        MachineryAssignment.objects.filter(machine=machine, is_active=True).update(is_active=False)
+
+        # Assign technician
+        if assigned_tech_id:
             try:
-                assigned_to = User.objects.get(pk=assigned_to_id)
-
-                # Deactivate existing assignments
-                MachineryAssignment.objects.filter(machine=machine, is_active=True).update(is_active=False)
-
-                # Create new active assignment
+                tech = User.objects.get(pk=assigned_tech_id, role='TECHNICIAN')
                 MachineryAssignment.objects.create(
                     machine=machine,
                     assigned_by=request.user,
-                    assigned_to=assigned_to,
+                    assigned_to=tech,
                     is_active=True
                 )
             except User.DoesNotExist:
-                messages.warning(request, "Technician not found. Machine updated without assignment.")
+                messages.warning(request, "Technician not found.")
+
+        # Assign repair person
+        if assigned_repair_id:
+            try:
+                repair = User.objects.get(pk=assigned_repair_id, role='REPAIR')
+                MachineryAssignment.objects.create(
+                    machine=machine,
+                    assigned_by=request.user,
+                    assigned_to=repair,
+                    is_active=True
+                )
+            except User.DoesNotExist:
+                messages.warning(request, "Repair person not found.")
 
         # Update collections
         MachineryCollection.objects.filter(machinery=machine).delete()
@@ -525,14 +592,15 @@ def update_machines(request, machine_id):
         messages.success(request, f"Machine '{machine.name}' updated successfully.")
         return redirect('accounts:manager_dashboard')
 
-    # GET request - render the form
+    # GET request
     return render(request, 'accounts/update_machinery.html', {
         'machine': machine,
-        'technicians': technicians,
+        'staff': staff,
         'collections': collections,
         'selected_collections': selected_collection_ids,
         'all_assignments': all_assignments
     })
+
 
 # Only managers are able to delete machines
 # accounts/dashboard/manager/machines/<int:machine_id>/delete/'
@@ -629,3 +697,43 @@ def export_machines_by_collection(request, collection_id):
         ])
 
     return response
+
+# If manager, create a collection
+@login_required(login_url='accounts:web_login')
+def create_collection(request):
+    if request.user.role != 'MANAGER':
+        messages.error(request, "You don't have permission to create collections.")
+        return redirect('accounts:dashboard')
+
+    if request.method == 'POST':
+        name = request.POST.get('name', '').strip()
+        description = request.POST.get('description', '').strip()
+
+        if not name:
+            messages.error(request, "Collection name is required.")
+            return render(request, 'accounts/create_collection.html')
+
+        # Check for duplicates
+        if Collection.objects.filter(name__iexact=name).exists():
+            messages.error(request, "A collection with that name already exists.")
+            return render(request, 'accounts/create_collection.html')
+
+        # Create a collection
+        Collection.objects.create(name=name, description=description)
+        messages.success(request, f"Collection '{name}' created successfully.")
+        return redirect('accounts:manager_dashboard')
+
+    return render(request, 'accounts/create_collection.html')
+
+# Delete collection
+@login_required(login_url='accounts:web_login')
+def delete_collection(request, collection_id):
+    if request.user.role != 'MANAGER':
+        messages.error(request, "You don't have permission to delete collections.")
+        return redirect('accounts:dashboard')
+
+    collection = get_object_or_404(Collection, pk=collection_id)
+    collection_name = collection.name
+    collection.delete()
+    messages.success(request, f"Collection '{collection_name}' was deleted successfully.")
+    return redirect('accounts:manager_dashboard')

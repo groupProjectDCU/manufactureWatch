@@ -91,8 +91,13 @@
     <div class="row mb-4">
         <div class="col-12">
             <div class="d-flex gap-2">
+                <!-- Add machine -->
                 <a href="{% url 'accounts:create_machines' %}" class="btn btn-primary">
                     <i class="bi bi-plus-circle"></i> Add Machine
+                </a>
+                <!-- Add collection -->
+                <a href="{% url 'accounts:create_collection' %}" class="btn btn-outline-dark">
+                    <i class="bi bi-folder-plus"></i> Add Collection
                 </a>
                 <button class="btn btn-secondary"><i class="bi bi-gear"></i> System Settings</button>
             </div>
@@ -182,8 +187,8 @@
                                         </a>
                                     </div>
                                 </td>
-                                <td>
-                                    <div class="dropdown">
+                                <td class="export-column">
+                                    <div class="dropdown export-dropdown">
                                         <button class="btn btn-sm btn-outline-dark dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                             Export
                                         </button>
@@ -221,6 +226,78 @@
                     <li class="page-item"><a class="page-link" href="#">Next</a></li>
                 </ul>
             </nav>
+        </div>
+    </div>
+
+    <!-- Collections -->
+    <!-- Location Overview Table -->
+    <div class="card mt-5">
+        <div class="card-header bg-dark text-white">
+            <h5 class="mb-0">Collections & Assigned Machinery</h5>
+        </div>
+        <div class="card-body">
+            {% if collection_summaries %}
+            <div class="table-responsive">
+                <table class="table table-striped align-middle">
+                    <thead class="table-secondary">
+                        <tr>
+                            <th>#</th>
+                            <th>Collection Name</th>
+                            <th>Description</th>
+                            <th>Machines Assigned</th>
+                            <th>Actions</th>
+                            <th>Export</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for col in collection_summaries %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td><strong>{{ col.name }}</strong></td>
+                            <td class="text-muted">{{ col.description|default:"—" }}</td>
+                            <td>
+                                {% if col.machines %}
+                                    <ul class="list-unstyled mb-0">
+                                        {% for machine in col.machines %}
+                                            <li>{{ machine.name }} <span class="text-muted">({{ machine.status }})</span></li>
+                                        {% endfor %}
+                                    </ul>
+                                {% else %}
+                                    <span class="text-muted">No machines</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="btn-group">
+                                    <!-- Confirm if really want to delete -->
+                                    <a href="{% url 'accounts:delete_collection' col.id %}" class="btn btn-sm btn-danger"
+                                       onclick="return confirm('Are you sure you want to delete this collection?');">
+                                        <i class="bi bi-x-circle"></i> Delete
+                                    </a>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="dropdown">
+                                    <button class="btn btn-sm btn-outline-dark dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Export
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a class="dropdown-item" href="{% url 'accounts:export_machines_by_collection' col.id %}">
+                                                By Collection
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </td>
+
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+                <p class="text-muted">No locations found.</p>
+            {% endif %}
         </div>
     </div>
 

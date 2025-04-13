@@ -13,6 +13,8 @@
     <!-- Form for creating a fault -->
     <form method="post">
         {% csrf_token %}
+
+        <!-- Fault case form fields -->
         {% for field in form %}
             <div class="mb-3">
                 <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
@@ -26,10 +28,16 @@
             </div>
         {% endfor %}
 
+        <!-- Add note field -->
+        <div class="mb-3">
+            <label for="note" class="form-label">Fault Note</label>
+            <textarea class="form-control" id="note" name="note" rows="4" placeholder="Enter any additional notes"></textarea>
+        </div>
+
         <!-- Submit button -->
         <button type="submit" class="btn btn-primary">Submit Fault</button>
 
-        <!-- Back to Fault Case List button -->
+        <!-- Cancel button -->
         <a href="{% url 'repairs:fault_case_list' %}" class="btn btn-secondary">Cancel</a>
     </form>
 </div>

@@ -1,11 +1,13 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
+from django.contrib import messages
+
+from machinery.models import Machinery
 from .models import FaultCase, FaultNote
 from .forms import FaultCaseForm, FaultNoteForm, FaultUpdateForm
 
-# TODO: UNCOMMENT LOGIN DECORATORS WHEN AUTHORIZATION IS IMPLEMENTED ON BACK-END
-# @login_required
+@login_required
 def fault_case_list(request):
     """
     View to list all fault cases.
@@ -19,7 +21,7 @@ def fault_case_list(request):
         fault.days_open = (datetime.now().date() - fault.created_at.date()).days
     return render(request, 'fault_list.html', {'faults': faults}) # Render the list of faults
 
-# @login_required
+@login_required
 def fault_case_detail(request, fault_case_id):
     """
     View to display details of a specific fault case.
@@ -33,40 +35,58 @@ def fault_case_detail(request, fault_case_id):
     notes = FaultNote.objects.filter(case=fault).order_by('-created_at') # Fetch all notes related to the fault case
     return render(request, 'fault_detail.html', {'fault_case': fault, 'notes': notes}) # Render the details of the fault case
 
-# @login_required
+@login_required
 def fault_case_create(request):
     """
-    View to create a new fault case.
-    - Only technicians can create a fault case.
+    View to create a new fault case along with a note.
     - Handles both GET and POST requests.
-    - On GET, displays an empty form for creating a new fault case.
-    - On POST, validates the form data and saves the new fault case to the database. Redirects to the detail view of the newly created fault case.
-    - Passes the form to the 'fault_form.html' template for rendering.
+    - On POST, validates the form data and saves the new fault case and the fault note to the database.
     """
+    if not request.user.role == 'TECHNICIAN':  # Only technicians can create a fault case
+        messages.error(request, "You don't have permission to create a fault case.")
+        return redirect('home')  # Redirect to home or an appropriate page
 
-    # TODO: add technician access
-    # if not request.user.role == 'TECHNICIAN': # Check if the user is a technician
-        # If the user is not a technician, redirect to the fault case list page
-    #    return render(request, '403.html', status=403) # Render a 403 Forbidden page
-    
+    machine = None  # Placeholder if machine data is missing
     if request.method == 'POST':
-        form = FaultCaseForm(request.POST) # Bind the submitted data to the form
+        form = FaultCaseForm(request.POST, request.FILES)  # Include files in form submission
+        note = request.POST.get('note')  # Get the note from the POST data
+        fault_image = request.FILES.get('fault_image')  # Get the uploaded image
+        machine_id = request.POST.get('machine')  # Get the selected machine
+
         # Validate the form data
         if form.is_valid():
-            fault = form.save(commit=False) # Create a new FaultCase instance but don't save it yet
-            fault.created_by = request.user # Set the user who created the fault case
-            fault.save() # Save the fault case to the database
+            fault = form.save(commit=False)  # Create a new FaultCase instance but don't save it yet
+            fault.created_by = request.user  # Set the user who created the fault case
+            fault.machine_id = machine_id  # Associate the fault with the selected machine
+            fault.save()  # Save the fault case to the database
 
-            # Fetch related notes for the fault case
-            #notes = FaultNote.objects.filter(fault_case=fault).order_by('-created_at') # Fetch all notes related to the fault case
+            # Save the uploaded image if available
+            if fault_image:
+                pass  # Add logic to handle the image upload if necessary
 
-            return redirect('repairs:fault_case_detail', fault_case_id=fault.case_id) # Render the fault detail directly.
+            # Create a new FaultNote
+            if note:
+                FaultNote.objects.create(
+                    case=fault,
+                    user=request.user,
+                    note=note
+                )
+
+            # Update the machine status to 'FAULT'
+            machine = fault.machine  # Get the machine associated with the fault
+            machine.status = 'FAULT'  # Change machine status to FAULT
+            machine.save()  # Save the updated machine status
+
+            messages.success(request, f"Fault case #{fault.case_id} was successfully created.")
+            return redirect('accounts:technician_dashboard')  # Redirect back to the technician dashboard after submission
     else:
-        form = FaultCaseForm() # Create an empty form for GET requests
+        form = FaultCaseForm()  # Create an empty form for GET requests
+        machine = Machinery.objects.first()  # You can modify this logic to fetch a specific machine if needed
 
-    return render(request, 'fault_form.html', {'form': form}) # Render the form template
+    return render(request, 'fault_form.html', {'form': form, 'machine': machine})  # Pass the machine to the template
 
-# @login_required
+
+@login_required
 def fault_case_update(request, fault_case_id):
     """
     View to update an existing fault case.
@@ -81,12 +101,14 @@ def fault_case_update(request, fault_case_id):
         # Validate the form data
         if form.is_valid():
             form.save() # Save the updated fault case to the database
+
+            messages.success(request, f"Fault case #{fault.case_id} was successfully updated.")
             return redirect('repairs:fault_case_detail', fault_case_id=fault.case_id) # Redirect to the detail view of the updated fault case
     else:
         form = FaultUpdateForm(instance=fault) # Create a form pre-filled with the fault case's current data for GET requests
     return render(request, 'update_fault_form.html', {'form': form, 'fault_case' : fault}) # Render the update form template
 
-# @login_required
+@login_required
 def fault_note_create(request, fault_case_id):
     """
     View to create a new note for a fault case.
@@ -108,3 +130,4 @@ def fault_note_create(request, fault_case_id):
     else:
         form = FaultNoteForm() # Create an empty form for GET requests
     return render(request, 'note_form.html', {'form': form, 'fault_case': fault}) # Render the form template for creating a new note
+
